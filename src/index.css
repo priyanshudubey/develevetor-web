@@ -1,0 +1,66 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Define the "DevElevator" Theme (Deep Slate & Emerald) */
+@theme {
+  /* Override the default gray palette to be Slate (Blue-ish Gray) */
+  --color-base-100: oklch(20% 0.05 264); /* Deep Slate (Main Background) */
+  --color-base-200: oklch(
+    16% 0.04 264
+  ); /* Darker Slate (Secondary Background) */
+  --color-base-300: oklch(12% 0.04 264); /* Darkest Slate (Borders) */
+
+  --color-primary: oklch(65% 0.22 150); /* Emerald Green (Action/Success) */
+  --color-secondary: oklch(70% 0.16 230); /* Sky Blue (Links/Info) */
+  --color-accent: oklch(75% 0.18 60); /* Amber/Orange (Warnings) */
+
+  --animate-shine: shine 1s;
+
+  @keyframes shine {
+    100% {
+      left: 125%;
+    }
+  }
+
+  --font-sans: "Inter", ui-sans-serif, system-ui;
+}
+
+/* DaisyUI v5 uses CSS variables for themes. 
+   We override the root variables to force our dark theme globally.
+*/
+:root {
+  color-scheme: dark;
+
+  /* Background Colors */
+  --b1: 20% 0.05 264; /* Base 100 */
+  --b2: 16% 0.04 264; /* Base 200 */
+  --b3: 12% 0.04 264; /* Base 300 */
+  --bc: 98% 0.02 264; /* Base Content (Text) */
+
+  /* Primary Color (Emerald) */
+  --p: 65% 0.22 150;
+  --pc: 15% 0.05 150; /* Primary Content (Text on Green) */
+
+  /* Secondary Color (Sky Blue) */
+  --s: 70% 0.16 230;
+  --sc: 15% 0.05 230;
+
+  /* Accent Color (Amber) */
+  --a: 75% 0.18 60;
+  --ac: 15% 0.05 60;
+
+  /* Neutral Color (Gray) */
+  --n: 25% 0.04 264;
+  --nc: 85% 0.02 264;
+
+  /* Semantic State Colors */
+  --in: 72% 0.15 230; /* Info */
+  --su: 65% 0.22 150; /* Success */
+  --wa: 82% 0.15 80; /* Warning */
+  --er: 60% 0.2 20; /* Error */
+
+  /* Technical UI Settings (Squared off look) */
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.3rem;
+  --rounded-badge: 0.2rem;
+}
