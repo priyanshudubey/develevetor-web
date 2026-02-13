@@ -128,38 +128,61 @@ export default function ProjectChat() {
     const userMsg = input;
     setInput("");
 
-    // 1. Add User Message immediately
+    // 1. Optimistic User Message
     setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
     setLoading(true);
 
     try {
-      // 2. Call Backend API
-      const { data } = await axios.post(
-        "http://localhost:3000/api/chat",
-        {
-          projectId: project.id,
-          message: userMsg,
-        },
-        { withCredentials: true },
-      );
+      // 2. Start Request (Use fetch instead of axios)
+      const response = await fetch("http://localhost:3000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId: project.id, message: userMsg }),
+        // Important: Include credentials if you need cookies
+        credentials: "include",
+      });
 
-      // 3. Add AI Response
+      if (!response.ok) throw new Error("Stream failed");
+      if (!response.body) throw new Error("No body");
+
+      // 3. Get Sources from Header
+      const sourcesHeader = response.headers.get("x-sources");
+      const sources = sourcesHeader ? JSON.parse(sourcesHeader) : [];
+
+      // 4. Create Placeholder Assistant Message
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: data.answer,
-          sources: data.sources, // e.g. ["src/index.ts", "package.json"]
-        },
+        { role: "assistant", content: "", sources: sources },
       ]);
+
+      // 5. Read the Stream
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunkValue = decoder.decode(value, { stream: true });
+
+        // Update state by appending new chunk to the last message
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          const lastMsg = newMessages[newMessages.length - 1];
+          // Only append if it's the assistant's message we just added
+          if (lastMsg.role === "assistant") {
+            lastMsg.content += chunkValue;
+          }
+          return newMessages;
+        });
+      }
     } catch (error) {
       console.error("Chat failed", error);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            "Sorry, I encountered an error while analyzing your code. Please try again.",
+          content: "Sorry, something went wrong with the stream.",
         },
       ]);
     } finally {

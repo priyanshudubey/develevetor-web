@@ -12,6 +12,7 @@ import {
   Clock,
   Trash2,
   AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -145,6 +146,59 @@ export default function DashboardLayout() {
     }
   };
 
+  const handleSyncProject = async (e: React.MouseEvent, projectId: string) => {
+    e.stopPropagation();
+
+    // Optimistic Update: Set status to INDEXING immediately in UI
+    setProjects((prev) =>
+      prev.map((p) => (p.id === projectId ? { ...p, status: "INDEXING" } : p)),
+    );
+
+    try {
+      await axios.post(
+        `http://localhost:3000/api/projects/${projectId}/sync`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+      // The backend will handle the rest.
+      // Since we updated the UI optimistically, we don't need to do much else.
+    } catch (error) {
+      console.error("Failed to sync project", error);
+      alert("Failed to sync project");
+      // Revert status on error
+      setProjects((prev) =>
+        prev.map(
+          (p) => (p.id === projectId ? { ...p, status: "READY" } : p), // Assume it was ready before
+        ),
+      );
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      // Only poll if we have projects that are INDEXING
+      const hasIndexing = projects.some(
+        (p) => p.status === "INDEXING" || p.status === "PENDING",
+      );
+
+      if (hasIndexing) {
+        try {
+          const { data } = await axios.get(
+            "http://localhost:3000/api/projects",
+            { withCredentials: true },
+          );
+          setProjects(data.projects);
+        } catch (error) {
+          console.error("Polling failed", error);
+        }
+      }
+    }, 5000); // Check every 5s
+
+    return () => clearInterval(interval);
+  }, [projects]);
+
   const statusMeta = activeProject
     ? getStatusBadge(activeProject.status)
     : null;
@@ -152,7 +206,7 @@ export default function DashboardLayout() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans flex overflow-hidden">
       {/* --- SIDEBAR --- */}
-      <aside className="w-[260px] shrink-0 border-r border-white/5 bg-base-200/50 flex flex-col h-screen">
+      <aside className="w-60 shrink-0 border-r border-white/5 bg-base-200/50 flex flex-col h-screen">
         {/* Brand Header */}
         <div className="h-14 flex items-center px-4 border-b border-white/5">
           <div className="flex items-center gap-2 font-bold text-slate-200">
@@ -225,6 +279,23 @@ export default function DashboardLayout() {
                       }`}
                     />
                   </div>
+
+                  <button
+                    onClick={(e) => handleSyncProject(e, proj.id)}
+                    disabled={proj.status === "INDEXING"}
+                    className={`p-1.5 rounded-lg transition-all ${
+                      proj.status === "INDEXING"
+                        ? "text-amber-500 cursor-not-allowed"
+                        : "hover:bg-primary/20 hover:text-primary text-slate-400"
+                    }`}
+                    title="Sync Repository">
+                    <RefreshCw
+                      size={14}
+                      className={
+                        proj.status === "INDEXING" ? "animate-spin" : ""
+                      }
+                    />
+                  </button>
 
                   {/* 👇 DELETE BUTTON (Visible on Group Hover) */}
                   <div
