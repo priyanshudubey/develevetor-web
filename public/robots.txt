@@ -1,0 +1,16 @@
+# Robot.txt for DevElevator
+User-agent: *
+
+# 1. Allow Public Pages
+Allow: /
+Allow: /login
+Allow: /privacy
+Allow: /terms
+
+# 2. Block Private App & API
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /auth/
+
+# 3. Point to Sitemap
+Sitemap: https://develevator.com/sitemap.xml

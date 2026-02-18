@@ -11,14 +11,18 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "@types/lodash": "^4.17.23",
     "axios": "^1.13.5",
     "framer-motion": "^12.34.0",
     "highlight.js": "^11.11.1",
+    "lodash": "^4.17.23",
     "lucide-react": "^0.563.0",
     "react": "^19.2.0",
+    "react-diff-viewer-continued": "^4.1.2",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.13.0",
+    "react-syntax-highlighter": "^16.1.0",
     "rehype-highlight": "^7.0.2"
   },
   "devDependencies": {
@@ -26,6 +30,7 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.24",
     "daisyui": "^5.5.18",
