@@ -41,8 +41,14 @@ export default function ChatInput({
     [projectId],
   );
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const MAX_CHARS = 1000;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    let val = e.target.value;
+    // Limit to max characters
+    if (val.length > MAX_CHARS) {
+      val = val.slice(0, MAX_CHARS);
+    }
     setInput(val);
 
     const lastChar = val.slice(-1);
@@ -124,28 +130,41 @@ export default function ChatInput({
           </div>
         )}
 
-        {/* Text Input */}
-        <input
-          type="text"
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSubmit()}
-          placeholder={
-            projectStatus === "READY"
-              ? "Ask a question (type @ to add files)..."
-              : "Waiting for indexing..."
-          }
-          disabled={disabled || projectStatus !== "READY"}
-          className="w-full h-14 pl-5 pr-14 bg-base-200/50 border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-primary/50"
-        />
+        {/* Text Input - Expandable Textarea */}
+        <div className="relative">
+          <textarea
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={(e) => {
+              // Submit on Ctrl+Enter, new line on Shift+Enter, normal Enter submits
+              if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
+            placeholder={
+              projectStatus === "READY"
+                ? "Ask a question (type @ to add files)..."
+                : "Waiting for indexing..."
+            }
+            disabled={disabled || projectStatus !== "READY"}
+            rows={1}
+            className="w-full min-h-14 max-h-40 p-4 pr-14 pb-8 bg-base-200/50 border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none overflow-y-auto"
+          />
 
-        {/* Send Button */}
-        <button
-          onClick={handleSubmit}
-          disabled={disabled || !input.trim()}
-          className="absolute right-2 top-0 bottom-0 my-auto h-10 w-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg flex items-center justify-center transition-all">
-          <Send size={18} />
-        </button>
+          {/* Character Counter */}
+          <div className="absolute right-14 bottom-2 text-xs text-slate-500">
+            {input.length}/{MAX_CHARS}
+          </div>
+
+          {/* Send Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={disabled || !input.trim()}
+            className="absolute right-3 bottom-3 h-10 w-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg flex items-center justify-center transition-all disabled:opacity-50">
+            <Send size={18} />
+          </button>
+        </div>
       </div>
     </div>
   );

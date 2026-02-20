@@ -11,6 +11,7 @@ interface ChatMessageProps {
   sources?: string[];
   projectId: string; // 👈 ADDED: Required for the PR Modal
   onSourceClick: (file: string) => void;
+  isError?: boolean;
 }
 
 export default function ChatMessage({
@@ -19,6 +20,7 @@ export default function ChatMessage({
   sources,
   projectId, // 👈 Destructure this
   onSourceClick,
+  isError,
 }: ChatMessageProps) {
   return (
     <div className={`flex gap-3 ${role === "user" ? "flex-row-reverse" : ""}`}>
@@ -35,10 +37,12 @@ export default function ChatMessage({
       {/* Content Bubble */}
       <div className={`max-w-[85%] space-y-2`}>
         <div
-          className={`px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-normal shadow-sm overflow-hidden prose prose-invert max-w-none ${
-            role === "user"
-              ? "bg-primary/10 text-primary-content border border-primary/20 rounded-tr-none"
-              : "bg-base-200/50 text-slate-200 border border-white/5 rounded-tl-none"
+          className={`px-4 py-3 rounded-2xl  text-sm leading-relaxed whitespace-normal shadow-sm overflow-hidden prose prose-invert max-w-none ${
+            isError
+              ? "bg-red-500/10 text-red-200 border border-red-500/20 rounded-tl-none"
+              : role === "user"
+                ? "bg-primary/10 text-primary-content border border-primary/20 rounded-tr-none"
+                : "bg-base-200/50 text-slate-200 border border-white/5 rounded-tl-none"
           }`}>
           <ReactMarkdown
             components={{
