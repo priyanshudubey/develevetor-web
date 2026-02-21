@@ -28,7 +28,7 @@ export default function Hero() {
           variants={staggerContainer}
           className="max-w-4xl mx-auto relative z-10">
           {/* --- 1. SPOTLIGHT EFFECT --- */}
-          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-125 h-75 bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
 
           {/* --- 2. GLASS BADGE --- */}
           <motion.div
@@ -91,7 +91,7 @@ export default function Hero() {
             </button>
 
             {/* Secondary Button */}
-            <button className="btn btn-ghost btn-lg h-12 min-h-0 rounded-md gap-2 px-8 font-medium text-slate-300 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:text-white hover:border-white/20 backdrop-blur-sm transition-all">
+            <button className="btn btn-ghost btn-lg h-12 min-h-0 rounded-md gap-2 px-8 font-medium text-slate-300 border border-white/5 bg-white/2 hover:bg-white/5 hover:text-white hover:border-white/20 backdrop-blur-sm transition-all">
               View Demo <ChevronRight size={16} />
             </button>
           </motion.div>

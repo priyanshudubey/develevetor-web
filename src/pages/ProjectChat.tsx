@@ -22,6 +22,12 @@ export default function ProjectChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const [usageStats, setUsageStats] = useState({
+    current: 0,
+    limit: 15,
+    resetAt: "",
+  });
+
   // 👇 1. New State to lock the chat UI
   const [rateLimitMessage, setRateLimitMessage] = useState<string | null>(null);
 
@@ -34,16 +40,49 @@ export default function ProjectChat() {
   } | null>(null);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
+  // 👇 2. Fetch Usage on Mount
+  useEffect(() => {
+    const fetchUsage = async () => {
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/auth/usage`,
+          {
+            withCredentials: true,
+          },
+        );
+
+        setUsageStats({
+          current: data.usage.chats,
+          limit: data.limits.chats,
+          resetAt: data.resetAt,
+        });
+
+        // Preemptively lock if they are already at the limit
+        if (data.usage.chats >= data.limits.chats) {
+          lockUI(data.resetAt, data.limits.chats);
+        }
+      } catch (err) {
+        console.error("Failed to fetch usage data", err);
+      }
+    };
+
+    fetchUsage();
+  }, []);
+
+  // Helper to format the time and lock the UI
+  const lockUI = (resetIso: string, limit: number) => {
+    const resetDate = new Date(resetIso);
+    const diffMs = resetDate.getTime() - new Date().getTime();
+    const hoursLeft = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutesLeft = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    setRateLimitMessage(
+      `Daily chat limit reached (${limit}/day). Limit resets in ${hoursLeft}h ${minutesLeft}m.`,
+    );
+  };
+
   // 1. Load History
   useEffect(() => {
-    if (!project?.id) {
-      setMessages([]);
-      setRateLimitMessage(null); // Reset lock on project change
-      return;
-    }
-
-    // Reset lock when switching projects
-    setRateLimitMessage(null);
+    if (!project?.id) return setMessages([]);
 
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/chat/${project.id}`, {
@@ -52,7 +91,6 @@ export default function ProjectChat() {
       .then((res) => setMessages(Array.isArray(res.data) ? res.data : []))
       .catch((err) => console.error("History failed", err));
   }, [project?.id]);
-
   // 2. Auto Scroll
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,7 +115,8 @@ export default function ProjectChat() {
 
   // 4. Send Message Logic
   const handleSend = async (text: string, selectedFiles: string[]) => {
-    if (!project || rateLimitMessage) return;
+    if (!project || rateLimitMessage || usageStats.current >= usageStats.limit)
+      return;
 
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setLoading(true);
@@ -122,6 +161,7 @@ export default function ProjectChat() {
           let limitMsg = errorData.error || "Rate limit exceeded.";
 
           if (errorData.resetAt) {
+            lockUI(errorData.resetAt, usageStats.limit);
             const resetDate = new Date(errorData.resetAt);
             const now = new Date();
             const diffMs = resetDate.getTime() - now.getTime();
@@ -141,6 +181,15 @@ export default function ProjectChat() {
         throw new Error("Stream failed");
       }
       if (!response.body) throw new Error("No body");
+
+      setUsageStats((prev) => {
+        const newCount = prev.current + 1;
+        // If this was their 15th message, lock it down right now!
+        if (newCount >= prev.limit) {
+          lockUI(prev.resetAt, prev.limit);
+        }
+        return { ...prev, current: newCount };
+      });
 
       const sourcesHeader = response.headers.get("x-sources");
       const sources = sourcesHeader ? JSON.parse(sourcesHeader) : [];
