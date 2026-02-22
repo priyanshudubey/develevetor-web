@@ -14,6 +14,7 @@ interface Message {
   content: string;
   sources?: string[];
   isError?: boolean;
+  attachments?: string[];
 }
 
 export default function ProjectChat() {
@@ -118,7 +119,10 @@ export default function ProjectChat() {
     if (!project || rateLimitMessage || usageStats.current >= usageStats.limit)
       return;
 
-    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: text, attachments: selectedFiles },
+    ]);
     setLoading(true);
 
     try {
@@ -282,6 +286,7 @@ export default function ProjectChat() {
             projectId={project.id}
             onSourceClick={openFile}
             isError={msg.isError}
+            attachments={msg.attachments}
           />
         ))}
 

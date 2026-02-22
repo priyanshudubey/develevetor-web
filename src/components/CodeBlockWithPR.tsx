@@ -9,6 +9,7 @@ interface CodeBlockProps {
   value: string;
   projectId: string;
   filename?: string;
+  allowPR?: boolean;
 }
 
 export default function CodeBlockWithPR({
@@ -16,6 +17,7 @@ export default function CodeBlockWithPR({
   value,
   projectId,
   filename: propFilename,
+  allowPR = true,
 }: CodeBlockProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -27,7 +29,7 @@ export default function CodeBlockWithPR({
     if (fileMatch) {
       return {
         detectedFilename: fileMatch[1].trim(),
-        cleanCode: value.replace(fileMatch[0] + "\n", ""),
+        cleanCode: value.replace(fileMatch[0], "").trimStart(),
       };
     } else {
       return {
@@ -53,12 +55,17 @@ export default function CodeBlockWithPR({
         </span>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors">
-            <GitPullRequest className="w-3.5 h-3.5" />
-            Create PR
-          </button>
+          {allowPR && (
+            <>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center gap-1.5 text-xs font-medium transition-colors text-purple-400 hover:text-purple-300">
+                <GitPullRequest className="w-3.5 h-3.5" />
+                Create PR
+              </button>
+              <div className="w-px h-3 bg-white/10" />
+            </>
+          )}
 
           <div className="w-px h-3 bg-white/10" />
 
