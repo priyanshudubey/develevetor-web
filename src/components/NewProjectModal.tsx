@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { X, Search, Lock, Globe, Loader2, Github } from "lucide-react";
+import {
+  X,
+  Search,
+  Lock,
+  Globe,
+  Loader2,
+  Github,
+  AlertCircle,
+} from "lucide-react"; // 👈 Added AlertCircle
 
 interface Project {
   id: string;
@@ -24,7 +32,7 @@ interface Repo {
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onProjectAdded: (project: Project) => void; // Callback to update parent list
+  onProjectAdded: (project: Project) => void;
 }
 
 export default function NewProjectModal({
@@ -36,10 +44,12 @@ export default function NewProjectModal({
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [importingId, setImportingId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null); // 👈 New error state
 
-  // Fetch repos when modal opens
+  // Fetch repos and clear errors when modal opens
   useEffect(() => {
     if (isOpen) {
+      setError(null); // Reset error state on open
       fetchRepos();
     }
   }, [isOpen]);
@@ -56,6 +66,7 @@ export default function NewProjectModal({
       setRepos(data.repos);
     } catch (error) {
       console.error("Failed to fetch repos", error);
+      setError("Failed to fetch your repositories from GitHub.");
     } finally {
       setLoading(false);
     }
@@ -63,6 +74,8 @@ export default function NewProjectModal({
 
   const importRepo = async (repo: Repo) => {
     setImportingId(repo.id);
+    setError(null); // Clear previous errors on new attempt
+
     try {
       const { data } = await axios.post(
         "http://localhost:3000/api/projects",
@@ -77,8 +90,20 @@ export default function NewProjectModal({
 
       onProjectAdded(data.project); // Update parent state
       onClose(); // Close modal
-    } catch (error) {
-      console.error("Import failed", error);
+    } catch (err: unknown) {
+      // 👇 The Rate Limit Error Handling
+      if (axios.isAxiosError(err) && err.response) {
+        const status = err.response.status;
+        const errorMessage = err.response.data.error;
+
+        if (status === 429 || status === 403) {
+          setError(`Limit Reached: ${errorMessage}`);
+        } else {
+          setError(errorMessage || "Failed to import repository.");
+        }
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setImportingId(null);
     }
@@ -113,6 +138,19 @@ export default function NewProjectModal({
             <X size={20} />
           </button>
         </div>
+
+        {/* 🆕 Error Banner */}
+        {error && (
+          <div className="px-4 pt-4">
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-200 text-sm flex items-start gap-2">
+              <AlertCircle
+                size={16}
+                className="shrink-0 mt-0.5"
+              />
+              <span>{error}</span>
+            </div>
+          </div>
+        )}
 
         {/* Search Bar */}
         <div className="p-4 border-b border-white/5">
@@ -160,7 +198,7 @@ export default function NewProjectModal({
                       <div className="text-sm font-medium text-slate-200 truncate group-hover:text-primary transition-colors">
                         {repo.name}
                       </div>
-                      <div className="text-xs text-slate-500 truncate max-w-[300px]">
+                      <div className="text-xs text-slate-500 truncate max-w-75">
                         {repo.updated_at.split("T")[0]} • {repo.stars} stars
                       </div>
                     </div>

@@ -11,7 +11,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import NewProjectModal from "../components/NewProjectModal";
@@ -30,7 +30,12 @@ export interface Project {
 export default function DashboardLayout() {
   const { logout } = useAuth(); // Removed 'user' (it's in Sidebar)
   const navigate = useNavigate();
+  const location = useLocation();
   const { projectId } = useParams(); // 👈 Get ID from URL
+
+  const isSettingsPage = location.pathname.includes("/settings");
+  const isDocsPage = location.pathname.includes("/docs");
+  const isDashboardHome = location.pathname === "/dashboard";
 
   // State
   const [projects, setProjects] = useState<Project[]>([]);
@@ -213,53 +218,73 @@ export default function DashboardLayout() {
 
       {/* --- MAIN CONTENT AREA --- */}
       <main className="flex-1 flex flex-col h-screen min-w-0 bg-base-100 relative">
-        {/* Top Header */}
-        <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 bg-base-100/50 backdrop-blur-sm z-10">
-          <div className="flex items-center gap-2 text-sm text-slate-400">
-            <button
-              className="md:hidden text-slate-400 hover:text-slate-200 transition-colors"
-              onClick={() => setIsSidebarOpen((prev) => !prev)}
-              aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-              title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
-              {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-            {activeProject ? (
-              <>
-                <span className="hover:text-white cursor-pointer transition-colors">
-                  {activeProject.name.split("/")[0]}
-                </span>
-                <span className="text-slate-600">/</span>
-                <span className="font-medium text-slate-200 flex items-center gap-2">
-                  <Github size={14} />
-                  {activeProject.name.split("/")[1]}
-                </span>
+        {/* Mobile Menu Toggle for pages without header */}
+        {(isSettingsPage || isDocsPage || isDashboardHome) && (
+          <button
+            className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#161b22] border border-white/10 rounded-lg text-slate-400 hover:text-slate-200 transition-colors shadow-lg"
+            onClick={() => setIsSidebarOpen((prev) => !prev)}
+            aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        )}
 
-                {statusMeta && (
-                  <span
-                    className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ml-2 ${statusMeta.color}`}>
-                    {statusMeta.icon}
-                    {statusMeta.label}
+        {/* Top Header - Only show on project pages */}
+        {!isSettingsPage && !isDocsPage && !isDashboardHome && (
+          <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 bg-base-100/50 backdrop-blur-sm z-10">
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <button
+                className="md:hidden text-slate-400 hover:text-slate-200 transition-colors"
+                onClick={() => setIsSidebarOpen((prev) => !prev)}
+                aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+                title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
+                {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
+              </button>
+              {activeProject ? (
+                <>
+                  <span className="hover:text-white cursor-pointer transition-colors">
+                    {activeProject.name.split("/")[0]}
                   </span>
-                )}
-              </>
-            ) : (
-              <span className="text-slate-500">Select a project to start</span>
-            )}
-          </div>
+                  <span className="text-slate-600">/</span>
+                  <span className="font-medium text-slate-200 flex items-center gap-2">
+                    <Github size={14} />
+                    {activeProject.name.split("/")[1]}
+                  </span>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={logout}
-              className="text-slate-400 hover:text-red-400 transition-colors"
-              title="Logout">
-              <LogOut size={16} />
-            </button>
-          </div>
-        </header>
+                  {statusMeta && (
+                    <span
+                      className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ml-2 ${statusMeta.color}`}>
+                      {statusMeta.icon}
+                      {statusMeta.label}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="text-slate-500">
+                  Select a project to start
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={logout}
+                className="text-slate-400 hover:text-red-400 transition-colors"
+                title="Logout">
+                <LogOut size={16} />
+              </button>
+            </div>
+          </header>
+        )}
 
         {/* Dynamic Content (Chat) */}
         <div className="flex-1 overflow-hidden relative">
-          <Outlet context={{ project: activeProject }} />
+          <Outlet
+            context={{
+              project: activeProject,
+              onAddProject: () => setIsModalOpen(true),
+            }}
+          />
         </div>
 
         {/* New Project Modal */}

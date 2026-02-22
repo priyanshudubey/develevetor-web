@@ -7,6 +7,10 @@ import type { JSX } from "react/jsx-dev-runtime";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
+import Settings from "./components/settings/Settings";
+import Documentation from "./components/docs/Documentation";
+// 👇 1. Import your new DashboardHome component
+import DashboardHome from "./components/DashboardHome";
 
 // --- Protected Route Component ---
 function ProtectedRoute({ children }: { children: JSX.Element }) {
@@ -62,21 +66,27 @@ function App() {
                 <DashboardLayout />
               </ProtectedRoute>
             }>
-            {/* A. Index Route: /dashboard 
-               Renders ProjectChat with no ID (Empty State)
-            */}
             <Route
               index
-              element={<ProjectChat />}
+              element={<DashboardHome />}
             />
 
             {/* B. Dynamic Route: /dashboard/project/123 
-               Renders ProjectChat WITH an ID.
-               CRITICAL: This matches the navigate() call in your Sidebar!
+                Renders ProjectChat WITH an ID for actual chatting.
             */}
             <Route
               path="project/:projectId"
               element={<ProjectChat />}
+            />
+            {/* C. Settings Route */}
+            <Route
+              path="settings"
+              element={<Settings />}
+            />
+            {/* D. Documentation Route */}
+            <Route
+              path="docs"
+              element={<Documentation />}
             />
           </Route>
 

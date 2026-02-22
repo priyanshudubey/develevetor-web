@@ -136,7 +136,12 @@ export default function Sidebar({
         <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-white/10 flex flex-col">
           {/* 2. Main Navigation (Adds structural density) */}
           <div className="px-4 py-4 space-y-1 border-b border-white/5">
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors">
+            <button
+              onClick={() => {
+                navigate("/dashboard");
+                onClose?.();
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors">
               <Home
                 size={16}
                 className="text-slate-500"
@@ -150,14 +155,24 @@ export default function Sidebar({
               />
               Usage & Billing
             </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors">
+            <button
+              onClick={() => {
+                navigate("/dashboard/settings");
+                onClose?.();
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors">
               <Settings
                 size={16}
                 className="text-slate-500"
               />
               Settings
             </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors">
+            <button
+              onClick={() => {
+                navigate("/dashboard/docs");
+                onClose?.();
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors">
               <BookOpen
                 size={16}
                 className="text-slate-500"
