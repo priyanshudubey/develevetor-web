@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   CreditCard,
   Zap,
@@ -6,185 +6,442 @@ import {
   GitPullRequest,
   Folder,
   Loader2,
+  CheckCircle2,
+  XCircle,
+  MapPin,
 } from "lucide-react";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 interface UsageData {
-  usage: { chats: number; prs: number; projects: number };
-  limits: { chats: number; prs: number; projects: number };
+  usage: {
+    chats: number;
+    prs: number;
+    projectCreates: number;
+    activeProjects: number;
+  };
+  limits: {
+    chats: number;
+    prs: number;
+    dailyProjectCreates: number;
+    maxActiveProjects: number;
+  };
+  totals?: { chats: number; prs: number };
   resetAt: string | null;
 }
 
+interface User {
+  plan: "FREE" | "PRO";
+}
+
+declare global {
+  interface Window { Razorpay: any; }
+}
+
+const API = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+// ─── Pricing Config ───────────────────────────────────────────────────────────
+
+const PRICING = {
+  IN:  { currency: "INR", amount: 79900, display: "₹799/mo",  original: "₹1,999/mo", symbol: "₹", value: 799  },
+  INT: { currency: "USD", amount: 1500,  display: "$15/mo",   original: "$29/mo",     symbol: "$", value: 15   },
+} as const;
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (window.Razorpay) { resolve(true); return; }
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.onload  = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
+}
+
+async function detectCountry(): Promise<string | null> {
+  try {
+    // Uses ipapi.co — free, no API key required for low volume
+    const res = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(4000) });
+    const { country_code } = await res.json();
+    return country_code ?? null;
+  } catch {
+    return null;  // Safely default; server validates anyway
+  }
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function BillingUsageTab() {
+  const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<UsageData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPaying, setIsPaying] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isLocalPricing, setIsLocalPricing] = useState(false);
+  const [geoReady, setGeoReady] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const pricing = isLocalPricing ? PRICING.IN : PRICING.INT;
+
+  // ── Data Fetch ─────────────────────────────────────────────────────────────
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [usageRes, userRes] = await Promise.all([
+        fetch(`${API}/api/auth/usage`, { credentials: "include" }),
+        fetch(`${API}/api/auth/me`,    { credentials: "include" }),
+      ]);
+      if (usageRes.ok) setData(await usageRes.json());
+      if (userRes.ok) {
+        const { user: u } = await userRes.json();
+        setUser(u);
+      }
+    } catch (e) {
+      console.error("Failed to fetch billing data:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // ── Geo Detection ──────────────────────────────────────────────────────────
 
   useEffect(() => {
-    const fetchUsage = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/users/usage", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          setData(await response.json());
-        }
-      } catch (error) {
-        console.error("Failed to fetch usage:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    fetchData();
+    detectCountry().then((code) => {
+      setIsLocalPricing(code === "IN");
+      setGeoReady(true);
+    });
+  }, [fetchData]);
 
-    fetchUsage();
-  }, []);
+  // ── Razorpay Checkout ──────────────────────────────────────────────────────
+
+  const handleUpgrade = async () => {
+    setIsPaying(true);
+    setPaymentStatus(null);
+
+    const loaded = await loadRazorpayScript();
+    if (!loaded) {
+      alert("Razorpay SDK failed to load. Check your internet connection.");
+      setIsPaying(false);
+      return;
+    }
+
+    try {
+      // 1. Create order on server — pass currency + amount so server can validate
+      const orderRes = await fetch(`${API}/api/razorpay/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          currency: pricing.currency,
+          amount: pricing.amount,
+        }),
+      });
+
+      if (!orderRes.ok) {
+        const err = await orderRes.json();
+        throw new Error(err.error || "Order creation failed");
+      }
+
+      const { orderId, amount, currency, keyId } = await orderRes.json();
+
+      // 2. Open Razorpay modal
+      const options = {
+        key: keyId,
+        amount,
+        currency,
+        name: "DevElevator",
+        description: `Pro Plan — ${pricing.display}`,
+        order_id: orderId,
+        theme: { color: "#10b981" },
+        handler: async (response: {
+          razorpay_payment_id: string;
+          razorpay_order_id: string;
+          razorpay_signature: string;
+        }) => {
+          try {
+            const verifyRes = await fetch(`${API}/api/razorpay/verify-payment`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify(response),
+            });
+            const result = await verifyRes.json();
+            if (result.success) {
+              setPaymentStatus({
+                type: "success",
+                message: `Payment of ${pricing.display} successful! Welcome to Pro 🎉`,
+              });
+              await fetchData();
+            } else {
+              setPaymentStatus({ type: "error", message: "Verification failed. Contact support." });
+            }
+          } catch {
+            setPaymentStatus({ type: "error", message: "Network error during verification." });
+          } finally {
+            setIsPaying(false);
+          }
+        },
+        modal: { ondismiss: () => setIsPaying(false) },
+      };
+
+      new window.Razorpay(options).open();
+    } catch (err: any) {
+      setPaymentStatus({ type: "error", message: err.message || "Payment initiation failed." });
+      setIsPaying(false);
+    }
+  };
+
+  // ── Cancel Subscription ───────────────────────────────────────────────────
+
+  const handleCancel = async () => {
+    if (!confirm("Are you sure you want to cancel your Pro subscription?")) return;
+    setIsCancelling(true);
+    try {
+      await fetch(`${API}/api/razorpay/cancel-subscription`, {
+        method: "POST",
+        credentials: "include",
+      });
+      await fetchData();
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  // ─── Render ───────────────────────────────────────────────────────────────
 
   if (isLoading || !data) {
     return (
-      <div className="flex items-center justify-center h-64 text-slate-400">
+      <div className="flex items-center justify-center h-64 text-base-content/40">
         <Loader2 className="w-6 h-6 animate-spin" />
       </div>
     );
   }
 
-  // Helper to calculate progress bar width
-  const getPercentage = (used: number, limit: number) =>
-    Math.min((used / limit) * 100, 100);
-
-  // Time until reset formatting
+  const isPro = user?.plan === "PRO";
+  const getPercentage = (used: number, limit: number) => Math.min((used / limit) * 100, 100);
   const timeUntilReset = data.resetAt
-    ? Math.max(
-        0,
-        Math.round(
-          (new Date(data.resetAt).getTime() - Date.now()) / (1000 * 60 * 60),
-        ),
-      )
+    ? Math.max(0, Math.round((new Date(data.resetAt).getTime() - Date.now()) / 3_600_000))
     : 24;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+
       {/* Header */}
-      <div className="border-b border-white/5 pb-4 mb-6">
+      <div className="border-b border-base-content/10 pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
-              <CreditCard
-                size={20}
-                className="text-primary"
-              />
+            <h2 className="text-lg font-semibold text-base-content flex items-center gap-2">
+              <CreditCard size={20} className="text-primary" />
               Usage & Billing
             </h2>
-            <p className="text-sm text-slate-400 mt-1">
-              Track your API consumption and manage your subscription.
+            <p className="text-sm text-base-content/50 mt-1">
+              Track your AI consumption and manage your subscription.
             </p>
           </div>
-          <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-medium text-slate-300">
-            Free Plan
+          <span
+            className={`px-3 py-1 border rounded-full text-xs font-medium ${
+              isPro
+                ? "bg-violet-500/10 border-violet-500/20 text-violet-400"
+                : "bg-base-content/5 border-base-content/10 text-base-content/60"
+            }`}>
+            {isPro ? "Pro Plan" : "Free Plan"}
           </span>
         </div>
       </div>
 
-      {/* Upgrade CTA */}
-      <div className="bg-linear-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Payment status banner */}
+      {paymentStatus && (
+        <div
+          className={`flex items-center gap-2 p-3 border rounded-xl text-sm ${
+            paymentStatus.type === "success"
+              ? "bg-success/10 border-success/20 text-success"
+              : "bg-error/10  border-error/20  text-error"
+          }`}>
+          {paymentStatus.type === "success"
+            ? <CheckCircle2 size={16} />
+            : <XCircle size={16} />}
+          {paymentStatus.message}
+        </div>
+      )}
+
+      {/* Regional Pricing Badge (India only) */}
+      {geoReady && isLocalPricing && !isPro && (
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 w-fit
+                        shadow-[0_0_18px_-4px_rgba(16,185,129,0.4)] animate-in fade-in duration-500">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+          </span>
+          <MapPin size={13} className="text-emerald-400" />
+          <span className="text-xs font-semibold text-emerald-400 tracking-wide">
+            Regional Pricing Applied — Special rate for India 🇮🇳
+          </span>
+        </div>
+      )}
+
+      {/* Upgrade / Manage CTA */}
+      <div className="bg-gradient-to-r from-emerald-500/10 to-emerald-400/10 border border-emerald-500/20 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-slate-100 flex items-center gap-2 mb-1">
-            <Zap
-              size={16}
-              className="text-yellow-400 fill-yellow-400/20"
-            />
-            Upgrade to Pro
+          <h3 className="text-base font-semibold text-base-content flex items-center gap-2 mb-1">
+            <Zap size={16} className="text-yellow-400 fill-yellow-400/20" />
+            {isPro ? "Pro Plan Active" : "Upgrade to Pro"}
           </h3>
-          <p className="text-sm text-slate-400">
-            Get unlimited AI chats, unmetered PR generation, and access to
-            Claude 3.5 Sonnet.
+          <p className="text-sm text-base-content/55">
+            {isPro
+              ? "You have unlimited AI chats and unmetered PR generation."
+              : "Unlimited AI chats, unmetered PRs, and access to all 6 AI models."}
           </p>
+
+          {/* Price display with Early Bird strikethrough */}
+          {!isPro && geoReady && (
+            <div className="flex flex-col gap-1 mt-3">
+              {/* Early Bird tag */}
+              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full w-fit
+                               bg-amber-400/15 border border-amber-400/30 text-amber-400">
+                🐣 Early Bird Discount
+              </span>
+              {/* Struck price + current price */}
+              <div className="flex items-baseline gap-2">
+                <span className="text-base font-medium line-through text-base-content/35">
+                  {pricing.original}
+                </span>
+                <span className="text-2xl font-bold text-base-content">
+                  {pricing.display}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
-        <button className="shrink-0 px-6 py-2.5 bg-white text-black font-semibold rounded-lg text-sm hover:bg-slate-200 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-          Upgrade Now - $15/mo
-        </button>
+
+        {isPro ? (
+          <button
+            onClick={handleCancel}
+            disabled={isCancelling}
+            className="shrink-0 px-5 py-2.5 bg-base-200 border border-base-300 text-base-content font-semibold rounded-xl text-sm hover:bg-base-300 transition-colors disabled:opacity-70 flex items-center gap-2">
+            {isCancelling && <Loader2 className="w-4 h-4 animate-spin" />}
+            {isCancelling ? "Cancelling..." : "Cancel Subscription"}
+          </button>
+        ) : (
+          <button
+            onClick={handleUpgrade}
+            disabled={isPaying || !geoReady}
+            className="shrink-0 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-content font-semibold rounded-xl text-sm transition-all disabled:opacity-70 flex items-center gap-2 shadow-lg shadow-primary/20">
+            {isPaying
+              ? <><Loader2 className="w-4 h-4 animate-spin" />Loading...</>
+              : !geoReady
+                ? <><Loader2 className="w-4 h-4 animate-spin" />Detecting region...</>
+                : `Upgrade Now — ${pricing.display}`}
+          </button>
+        )}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-        {/* Chats Progress */}
-        <div className="bg-[#161b22] border border-white/5 rounded-xl p-5 space-y-4">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <MessageSquare
-                size={16}
-                className="text-blue-400"
-              />{" "}
-              Daily Chats
-            </div>
-            <span className="text-xs text-slate-500 font-mono">
-              {data.usage.chats} / {data.limits.chats}
-            </span>
-          </div>
-          <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${data.usage.chats >= data.limits.chats ? "bg-red-500" : "bg-blue-500"}`}
-              style={{
-                width: `${getPercentage(data.usage.chats, data.limits.chats)}%`,
-              }}
-            />
-          </div>
-        </div>
+      {/* Usage Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Meter
+          icon={<MessageSquare size={14} className="text-blue-400" />}
+          label="Daily Chats"
+          used={data.usage.chats}
+          limit={data.limits.chats}
+          unlimited={isPro}
+          color="bg-blue-500"
+          getPercentage={getPercentage}
+        />
+        <Meter
+          icon={<GitPullRequest size={14} className="text-violet-400" />}
+          label="Daily Pull Requests"
+          used={data.usage.prs}
+          limit={data.limits.prs}
+          unlimited={isPro}
+          color="bg-violet-500"
+          getPercentage={getPercentage}
+        />
 
-        {/* PRs Progress */}
-        <div className="bg-[#161b22] border border-white/5 rounded-xl p-5 space-y-4">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <GitPullRequest
-                size={16}
-                className="text-purple-400"
-              />{" "}
-              Daily Pull Requests
-            </div>
-            <span className="text-xs text-slate-500 font-mono">
-              {data.usage.prs} / {data.limits.prs}
-            </span>
+        {/* Workspaces card */}
+        <div className="bg-base-200 border border-base-300 rounded-xl p-5 space-y-4 md:col-span-2">
+          <div className="flex items-center gap-2 text-sm font-medium text-base-content/70">
+            <Folder size={14} className="text-emerald-400" />
+            Workspace Limits
           </div>
-          <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${data.usage.prs >= data.limits.prs ? "bg-red-500" : "bg-purple-500"}`}
-              style={{
-                width: `${getPercentage(data.usage.prs, data.limits.prs)}%`,
-              }}
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs text-base-content/50">
+              <span>Created Today</span>
+              <span className="font-mono">{data.usage.projectCreates} / {data.limits.dailyProjectCreates}</span>
+            </div>
+            <ProgressBar
+              pct={getPercentage(data.usage.projectCreates, data.limits.dailyProjectCreates)}
+              maxed={data.usage.projectCreates >= data.limits.dailyProjectCreates}
+              color="bg-emerald-500"
             />
           </div>
-        </div>
-
-        {/* Projects Progress */}
-        <div className="bg-[#161b22] border border-white/5 rounded-xl p-5 space-y-4 md:col-span-2">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <Folder
-                size={16}
-                className="text-emerald-400"
-              />{" "}
-              Active Workspaces
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs text-base-content/50">
+              <span>Total Active Workspaces</span>
+              <span className="font-mono">{data.usage.activeProjects} / {data.limits.maxActiveProjects}</span>
             </div>
-            <span className="text-xs text-slate-500 font-mono">
-              {data.usage.projects} / {data.limits.projects}
-            </span>
-          </div>
-          <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${data.usage.projects >= data.limits.projects ? "bg-red-500" : "bg-emerald-500"}`}
-              style={{
-                width: `${getPercentage(data.usage.projects, data.limits.projects)}%`,
-              }}
+            <ProgressBar
+              pct={getPercentage(data.usage.activeProjects, data.limits.maxActiveProjects)}
+              maxed={data.usage.activeProjects >= data.limits.maxActiveProjects}
+              color="bg-emerald-500"
             />
           </div>
-          <p className="text-[11px] text-slate-500">
-            Workspaces are a hard limit. Delete an existing workspace to create
-            a new one.
+          <p className="text-[11px] text-base-content/40 leading-relaxed">
+            Up to {data.limits.dailyProjectCreates} new workspaces/day, max {data.limits.maxActiveProjects} active total.
           </p>
         </div>
       </div>
 
-      <p className="text-xs text-center text-slate-500 pt-4">
-        Daily limits reset in approximately{" "}
-        <strong>{timeUntilReset} hours</strong>.
+      <p className="text-xs text-center text-base-content/40 pt-2">
+        Daily limits reset in approximately <strong>{timeUntilReset} hours</strong>.
       </p>
+    </div>
+  );
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function ProgressBar({ pct, maxed, color }: { pct: number; maxed: boolean; color: string }) {
+  return (
+    <div className="h-2 w-full bg-base-content/10 rounded-full overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all duration-500 ${maxed ? "bg-error" : color}`}
+        style={{ width: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
+function Meter({
+  icon, label, used, limit, unlimited, color, getPercentage,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  used: number;
+  limit: number;
+  unlimited: boolean;
+  color: string;
+  getPercentage: (u: number, l: number) => number;
+}) {
+  return (
+    <div className="bg-base-200 border border-base-300 rounded-xl p-5 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm font-medium text-base-content/70">
+          {icon} {label}
+        </div>
+        <span className="text-xs font-mono text-base-content/50">
+          {used} / {unlimited ? "∞" : limit}
+        </span>
+      </div>
+      <ProgressBar
+        pct={unlimited ? Math.min((used / limit) * 5, 100) : getPercentage(used, limit)}
+        maxed={!unlimited && used >= limit}
+        color={color}
+      />
     </div>
   );
 }

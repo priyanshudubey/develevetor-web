@@ -9,8 +9,8 @@ import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
 import Settings from "./components/settings/Settings";
 import Documentation from "./components/docs/Documentation";
-// 👇 1. Import your new DashboardHome component
 import DashboardHome from "./components/DashboardHome";
+import InsightsHub from "./components/insights/InsightsHub";
 
 // --- Protected Route Component ---
 function ProtectedRoute({ children }: { children: JSX.Element }) {
@@ -35,10 +35,13 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
   return children;
 }
 
+import { ThemeProvider } from "./context/ThemeContext";
+
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
         <Routes>
           {/* 1. Public Zone */}
           <Route
@@ -78,6 +81,10 @@ function App() {
               path="project/:projectId"
               element={<ProjectChat />}
             />
+            {/* E. Insights Hub — project picker */}
+            <Route path="insights" element={<InsightsHub />} />
+            {/* F. Insights Hub — project detail view */}
+            <Route path="insights/:projectId" element={<InsightsHub />} />
             {/* C. Settings Route */}
             <Route
               path="settings"
@@ -103,6 +110,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -16,6 +16,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import NewProjectModal from "../components/NewProjectModal";
 import Sidebar from "../components/Sidebar";
+import ThemeToggle from "../components/ThemeToggle";
 
 // 1. Define the shape of a Project
 export interface Project {
@@ -219,9 +220,9 @@ export default function DashboardLayout() {
       {/* --- MAIN CONTENT AREA --- */}
       <main className="flex-1 flex flex-col h-screen min-w-0 bg-base-100 relative">
         {/* Mobile Menu Toggle for pages without header */}
-        {(isSettingsPage || isDocsPage || isDashboardHome) && (
+        {(isSettingsPage || isDocsPage) && (
           <button
-            className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#161b22] border border-white/10 rounded-lg text-slate-400 hover:text-slate-200 transition-colors shadow-lg"
+            className="md:hidden fixed top-4 left-4 z-50 p-2 bg-base-200 border border-base-300 rounded-lg text-base-content/60 hover:text-base-content transition-colors shadow-lg"
             onClick={() => setIsSidebarOpen((prev) => !prev)}
             aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
             title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
@@ -229,12 +230,36 @@ export default function DashboardLayout() {
           </button>
         )}
 
-        {/* Top Header - Only show on project pages */}
-        {!isSettingsPage && !isDocsPage && !isDashboardHome && (
-          <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 bg-base-100/50 backdrop-blur-sm z-10">
-            <div className="flex items-center gap-2 text-sm text-slate-400">
+        {/* Dashboard Home Header */}
+        {isDashboardHome && (
+          <header className="sticky top-0 h-14 flex items-center justify-between px-6 border-b border-base-300 bg-base-100/80 backdrop-blur-sm z-10">
+            <div className="flex items-center gap-2 md:hidden">
               <button
-                className="md:hidden text-slate-400 hover:text-slate-200 transition-colors"
+                className="text-base-content/60 hover:text-base-content transition-colors"
+                onClick={() => setIsSidebarOpen((prev) => !prev)}
+                aria-label="Toggle sidebar">
+                {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
+              </button>
+            </div>
+            <span className="font-semibold text-base-content/80 text-sm tracking-tight hidden md:block">Dashboard</span>
+            <div className="flex items-center gap-4 ml-auto">
+              <ThemeToggle />
+              <button
+                onClick={logout}
+                className="text-base-content/60 hover:text-error transition-colors"
+                title="Logout">
+                <LogOut size={16} />
+              </button>
+            </div>
+          </header>
+        )}
+
+        {/* Top Header - Show on project pages */}
+        {!isSettingsPage && !isDocsPage && !isDashboardHome && (
+          <header className="h-14 flex items-center justify-between px-6 border-b border-base-300 bg-base-100/50 backdrop-blur-sm z-10">
+            <div className="flex items-center gap-2 text-sm text-base-content/60">
+              <button
+                className="md:hidden text-base-content/60 hover:text-base-content transition-colors"
                 onClick={() => setIsSidebarOpen((prev) => !prev)}
                 aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
                 title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
@@ -242,11 +267,11 @@ export default function DashboardLayout() {
               </button>
               {activeProject ? (
                 <>
-                  <span className="hover:text-white cursor-pointer transition-colors">
+                  <span className="hover:text-base-content cursor-pointer transition-colors">
                     {activeProject.name.split("/")[0]}
                   </span>
-                  <span className="text-slate-600">/</span>
-                  <span className="font-medium text-slate-200 flex items-center gap-2">
+                  <span className="text-base-content/40">/</span>
+                  <span className="font-medium text-base-content flex items-center gap-2">
                     <Github size={14} />
                     {activeProject.name.split("/")[1]}
                   </span>
@@ -260,16 +285,17 @@ export default function DashboardLayout() {
                   )}
                 </>
               ) : (
-                <span className="text-slate-500">
+                <span className="text-base-content/50">
                   Select a project to start
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-4">
+              <ThemeToggle />
               <button
                 onClick={logout}
-                className="text-slate-400 hover:text-red-400 transition-colors"
+                className="text-base-content/60 hover:text-error transition-colors"
                 title="Logout">
                 <LogOut size={16} />
               </button>
@@ -277,8 +303,8 @@ export default function DashboardLayout() {
           </header>
         )}
 
-        {/* Dynamic Content (Chat) */}
-        <div className="flex-1 overflow-hidden relative">
+        {/* Dynamic Content */}
+        <div className="flex-1 overflow-auto relative">
           <Outlet
             context={{
               project: activeProject,
@@ -286,6 +312,7 @@ export default function DashboardLayout() {
             }}
           />
         </div>
+
 
         {/* New Project Modal */}
         <NewProjectModal
@@ -297,17 +324,17 @@ export default function DashboardLayout() {
 
       {/* Delete Confirmation Modal */}
       {projectToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-2xl p-6 relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-base-100 border border-base-300 rounded-2xl shadow-xl p-6 relative animate-in zoom-in-95 duration-200">
             <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-4 text-red-500">
+              <div className="w-12 h-12 bg-error/10 rounded-full flex items-center justify-center mb-4 text-error">
                 <AlertTriangle size={24} />
               </div>
 
-              <h3 className="text-xl font-bold text-slate-100 mb-2">
+              <h3 className="text-xl font-bold text-base-content mb-2">
                 Delete Project?
               </h3>
-              <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+              <p className="text-base-content/60 text-sm mb-6 leading-relaxed">
                 This action cannot be undone. This will permanently delete the
                 project and all associated chat history.
               </p>
@@ -316,13 +343,13 @@ export default function DashboardLayout() {
                 <button
                   onClick={() => setProjectToDelete(null)}
                   disabled={isDeleting}
-                  className="flex-1 py-2.5 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 hover:text-white transition-all text-sm font-medium">
+                  className="flex-1 py-2.5 rounded-xl border border-base-300 text-base-content/80 hover:bg-base-200 hover:text-base-content transition-all text-sm font-medium">
                   Cancel
                 </button>
                 <button
                   onClick={confirmDelete}
                   disabled={isDeleting}
-                  className="flex-1 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-sm font-medium flex items-center justify-center gap-2">
+                  className="flex-1 py-2.5 rounded-xl bg-error/10 border border-error/20 text-error hover:bg-error hover:text-error-content transition-all text-sm font-medium flex items-center justify-center gap-2">
                   {isDeleting ? (
                     <Loader2
                       size={16}

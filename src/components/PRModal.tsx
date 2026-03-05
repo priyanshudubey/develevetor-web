@@ -165,7 +165,7 @@ export default function PRModal({
   };
 
   const renderDiff = () => (
-    <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-white/10 bg-[#0d1117] text-xs">
+    <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#0d1117] text-xs">
       <ReactDiffViewer
         oldValue={originalContent}
         newValue={newContent}
@@ -193,16 +193,16 @@ export default function PRModal({
   );
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/20 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className={`bg-[#161b22] border border-white/10 rounded-xl w-full shadow-2xl overflow-hidden transition-all duration-300 ${
+        className={`bg-white dark:bg-[#161b22] border border-slate-900/10 dark:border-white/10 rounded-xl w-full shadow-xl dark:shadow-2xl overflow-hidden transition-all duration-300 ${
           hasToken && (step === "diff" || step === "loading_diff")
             ? "max-w-6xl"
             : "max-w-lg"
         }`}>
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b border-white/10 bg-[#0d1117]">
-          <h3 className="text-white font-semibold flex items-center gap-2">
+        <div className="flex justify-between items-center p-4 border-b border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#0d1117]">
+          <h3 className="text-slate-900 dark:text-white font-semibold flex items-center gap-2">
             {step === "diff" || step === "loading_diff" ? (
               <FileDiff className="w-5 h-5 text-blue-400" />
             ) : (
@@ -212,7 +212,7 @@ export default function PRModal({
           </h3>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors">
+            className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -231,13 +231,13 @@ export default function PRModal({
         ) : !hasToken ? (
           <div className="p-8 flex flex-col items-center text-center gap-4">
             <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-2">
-              <Settings className="w-6 h-6 text-blue-400" />
+              <Settings className="w-6 h-6 text-blue-500 dark:text-blue-400" />
             </div>
             <div>
-              <h4 className="text-slate-100 font-medium mb-2">
+              <h4 className="text-slate-900 dark:text-slate-100 font-medium mb-2">
                 GitHub Token Required
               </h4>
-              <p className="text-sm text-slate-400 mb-6">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
                 To fetch file diffs and create Pull Requests directly to your
                 repository, you need to connect your GitHub account.
               </p>
@@ -270,12 +270,12 @@ export default function PRModal({
                   onChange={(e) => setTargetPath(e.target.value)}
                   onBlur={handlePathBlur}
                   onKeyDown={(e) => e.key === "Enter" && handlePathBlur()}
-                  className="w-full bg-[#0d1117] border border-white/10 rounded p-2 text-sm text-yellow-300 font-mono focus:ring-1 focus:ring-blue-500 outline-none transition-all pr-10 disabled:opacity-50"
+                  className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-900/10 dark:border-white/10 rounded p-2 text-sm text-yellow-600 dark:text-yellow-300 font-mono focus:ring-1 focus:ring-blue-500 outline-none transition-all pr-10 disabled:opacity-50"
                   placeholder="src/components/MyComponent.tsx"
                 />
                 <button
                   onClick={handlePathBlur}
-                  className="absolute right-2 top-2 text-slate-500 hover:text-white"
+                  className="absolute right-2 top-2 text-slate-500 hover:text-slate-900 dark:hover:text-white"
                   title="Refresh Diff">
                   <RefreshCw className="w-4 h-4" />
                 </button>
@@ -344,7 +344,7 @@ export default function PRModal({
                             title: e.target.value,
                           }))
                         }
-                        className="w-full bg-[#0d1117] border border-white/10 rounded p-2 text-sm text-white focus:ring-1 focus:ring-purple-500 outline-none transition-all"
+                        className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-900/10 dark:border-white/10 rounded p-2 text-sm text-slate-900 dark:text-white focus:ring-1 focus:ring-purple-500 outline-none transition-all"
                       />
                     </div>
 
@@ -362,7 +362,7 @@ export default function PRModal({
                             branch: e.target.value,
                           }))
                         }
-                        className="w-full bg-[#0d1117] border border-white/10 rounded p-2 text-sm text-white font-mono focus:ring-1 focus:ring-purple-500 outline-none transition-all"
+                        className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-900/10 dark:border-white/10 rounded p-2 text-sm text-slate-900 dark:text-white font-mono focus:ring-1 focus:ring-purple-500 outline-none transition-all"
                       />
                     </div>
 
@@ -378,7 +378,7 @@ export default function PRModal({
                             description: e.target.value,
                           }))
                         }
-                        className="w-full bg-[#0d1117] border border-white/10 rounded p-2 text-sm text-white h-20 focus:ring-1 focus:ring-purple-500 outline-none resize-none transition-all"
+                        className="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-900/10 dark:border-white/10 rounded p-2 text-sm text-slate-900 dark:text-white h-20 focus:ring-1 focus:ring-purple-500 outline-none resize-none transition-all"
                       />
                     </div>
 
@@ -386,7 +386,7 @@ export default function PRModal({
                       <button
                         type="button"
                         onClick={() => setStep("diff")}
-                        className="text-slate-400 hover:text-white text-sm">
+                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm">
                         ← Back to Review
                       </button>
                       <div className="flex gap-3">

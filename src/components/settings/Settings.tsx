@@ -10,10 +10,10 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("ai");
 
   return (
-    <div className="h-full bg-[#0d1117] text-slate-200 p-8 overflow-y-auto">
+    <div className="h-full bg-slate-50 dark:bg-[#0d1117] text-slate-900 dark:text-slate-200 p-8 overflow-y-auto">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1 text-slate-100">Settings</h1>
-        <p className="text-sm text-slate-400 mb-8">
+        <h1 className="text-2xl font-bold mb-1 text-slate-900 dark:text-slate-100">Settings</h1>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-8">
           Manage your AI preferences, integrations, and account details.
         </p>
 
@@ -25,7 +25,7 @@ export default function Settings() {
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "ai"
                   ? "bg-primary/10 text-primary"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
               }`}>
               <Sparkles
                 size={18}
@@ -39,7 +39,7 @@ export default function Settings() {
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "github"
                   ? "bg-primary/10 text-primary"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
               }`}>
               <Github
                 size={18}
@@ -53,7 +53,7 @@ export default function Settings() {
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "billing"
                   ? "bg-primary/10 text-primary"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
               }`}>
               <CreditCard size={18} />
               Usage & Billing
@@ -64,7 +64,7 @@ export default function Settings() {
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "appearance"
                   ? "bg-primary/10 text-primary"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
               }`}>
               <Palette size={18} />
               Appearance
@@ -78,8 +78,8 @@ export default function Settings() {
             {activeTab === "billing" && <BillingUsageTab />}
 
             {activeTab === "appearance" && (
-              <div className="flex flex-col items-center justify-center h-64 border border-dashed border-white/10 rounded-xl bg-[#161b22]/50 animate-in fade-in duration-300">
-                <p className="text-slate-400 text-sm font-medium">
+              <div className="flex flex-col items-center justify-center h-64 border border-dashed border-slate-900/10 dark:border-white/10 rounded-xl bg-white dark:bg-[#161b22]/50 animate-in fade-in duration-300 shadow-sm dark:shadow-none">
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
                   {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}{" "}
                   settings coming soon.
                 </p>

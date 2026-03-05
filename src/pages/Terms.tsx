@@ -1,168 +1,174 @@
 import { Link } from "react-router-dom";
+import { 
+  Scale, 
+  TerminalSquare, 
+  AlertTriangle, 
+  CreditCard, 
+  BookOpen, 
+  Ban, 
+  ShieldAlert, 
+  Mail 
+} from "lucide-react";
+// Assuming Footer is in the correct path for your project
 import Footer from "../components/Footer";
 
 export default function Terms() {
-  const lastUpdated = "February 17, 2026";
+  const lastUpdated = "March 5, 2026";
   const contactEmail = "support@develevator.com";
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-slate-300 font-sans">
-      {/* Simple Header */}
-      <div className="border-b border-white/5 bg-[#161b22]">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center">
-          <span className="font-bold text-lg text-slate-100">
-            <Link to="/">DevElevator</Link>
-          </span>
-          <span className="mx-3 text-slate-600">/</span>
-          <span className="font-medium text-slate-400">Terms of Service</span>
+    <div className="min-h-screen bg-base-100 text-base-content font-sans flex flex-col">
+      {/* Premium Header - Matches Privacy Page */}
+      <header className="border-b border-base-300 bg-base-200/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Link to="/" className="font-bold text-lg text-emerald-400 hover:text-emerald-300 transition-colors">
+              DevElevator
+            </Link>
+            <span className="text-base-content/40">/</span>
+            <span className="font-medium text-base-content/80">Terms of Service</span>
+          </div>
+          <Scale className="w-5 h-5 text-emerald-500/50" />
         </div>
-      </div>
+      </header>
 
-      {/* Legal Content */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
-        <h1 className="text-3xl font-bold text-white mb-2">Terms of Service</h1>
-        <p className="text-slate-500 mb-8">Last Updated: {lastUpdated}</p>
+      {/* Hero Section */}
+      <main className="flex-grow max-w-4xl mx-auto px-6 py-12 md:py-20">
+        <div className="mb-12">
+          <h1 className="text-4xl font-extrabold tracking-tight text-base-content mb-4">
+            Terms of Service
+          </h1>
+          <p className="text-base-content/60 text-lg">
+            Effective Date: <span className="text-base-content/90 font-medium">{lastUpdated}</span>
+          </p>
+          <p className="mt-4 text-base-content/70 text-lg leading-relaxed max-w-3xl">
+            Please read these terms carefully before using DevElevator. They define your rights, our responsibilities, and the legal boundaries of using AI-assisted development tools.
+          </p>
+        </div>
 
-        <div className="space-y-8 text-sm leading-relaxed text-slate-300">
-          {/* 1. Acceptance */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              1. Acceptance of Terms
-            </h2>
-            <p>
-              By accessing or using DevElevator ("Service"), you agree to be
-              bound by these Terms of Service ("Terms"). If you disagree with
-              any part of the terms, you may not access the Service.
+        <div className="space-y-8">
+          {/* Section 1 & 2 Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section className="bg-base-200/30 p-6 rounded-xl border border-base-300">
+              <div className="flex items-center space-x-3 mb-4">
+                <Scale className="w-6 h-6 text-emerald-500" />
+                <h2 className="text-xl font-semibold text-base-content">1. Acceptance</h2>
+              </div>
+              <p className="text-base-content/80 leading-relaxed text-sm">
+                By accessing or using DevElevator ("Service"), you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access the Service.
+              </p>
+            </section>
+
+            <section className="bg-base-200/30 p-6 rounded-xl border border-base-300">
+              <div className="flex items-center space-x-3 mb-4">
+                <TerminalSquare className="w-6 h-6 text-emerald-500" />
+                <h2 className="text-xl font-semibold text-base-content">2. The Service</h2>
+              </div>
+              <p className="text-base-content/80 leading-relaxed text-sm">
+                DevElevator is an AI-powered developer tool that indexes GitHub repositories to provide semantic search, code insights, and natural language refactoring suggestions using third-party AI providers.
+              </p>
+            </section>
+          </div>
+
+          {/* Section 3 - AI Disclaimer (CRITICAL - Highlighted in Amber) */}
+          <section className="bg-amber-500/10 border border-amber-500/30 p-6 rounded-xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
+            <div className="flex items-center space-x-3 mb-4">
+              <AlertTriangle className="w-6 h-6 text-amber-500" />
+              <h2 className="text-2xl font-semibold text-amber-500">3. AI Accuracy & Liability</h2>
+            </div>
+            <p className="mb-4 text-base-content/90 font-medium">
+              The Service utilizes experimental Generative AI. You acknowledge that responses generated by DevElevator:
             </p>
-          </section>
-
-          {/* 2. Description of Service */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              2. Description of Service
-            </h2>
-            <p>
-              DevElevator is an AI-powered developer tool that allows users to
-              index their GitHub repositories and query them using natural
-              language. The Service uses third-party Artificial Intelligence
-              (AI) providers to generate responses and code snippets.
-            </p>
-          </section>
-
-          {/* 3. AI Disclaimer (CRITICAL FOR DEV TOOLS) */}
-          <section className="bg-red-500/5 border border-red-500/20 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold text-red-200 mb-2">
-              3. AI Accuracy & Liability Disclaimer
-            </h2>
-            <p className="mb-2">
-              <strong>The Service uses experimental AI technology.</strong>{" "}
-              Responses generated by DevElevator:
-            </p>
-            <ul className="list-disc pl-5 space-y-1 mb-2">
-              <li>May contain errors, bugs, or security vulnerabilities.</li>
-              <li>
-                Should <strong>never</strong> be deployed to production
-                environments without thorough human review and testing.
+            <ul className="space-y-2 mb-4 text-base-content/80 text-sm">
+              <li className="flex items-start space-x-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                <span>May contain logical errors, syntax bugs, or security vulnerabilities (hallucinations).</span>
               </li>
-              <li>Are provided "as is" without warranty of any kind.</li>
-            </ul>
-            <p>
-              <strong>You are solely responsible</strong> for any code you
-              write, copy, or deploy based on suggestions from the Service.
-              DevElevator is not liable for any system outages, data loss, or
-              security breaches resulting from the use of generated code.
-            </p>
-          </section>
-
-          {/* 4. Intellectual Property */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              4. Intellectual Property Rights
-            </h2>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>
-                <strong>Your Code:</strong> You retain all rights and ownership
-                of the code repositories you connect to the Service. We do not
-                claim ownership of your intellectual property.
+              <li className="flex items-start space-x-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                <span>Should <strong>never</strong> be deployed to production environments without thorough human review and testing.</span>
               </li>
-              <li>
-                <strong>Our Platform:</strong> DevElevator, including its
-                interface, proprietary indexing logic, and branding, is owned by
-                us and protected by copyright laws.
-              </li>
-              <li>
-                <strong>AI Output:</strong> To the fullest extent permitted by
-                law, you own the output generated by the AI in response to your
-                queries.
+              <li className="flex items-start space-x-2">
+                <span className="text-amber-500 mt-0.5">•</span>
+                <span>Are provided "as is" without warranty of any kind.</span>
               </li>
             </ul>
-          </section>
-
-          {/* 5. Acceptable Use */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              5. Acceptable Use
-            </h2>
-            <p>
-              You agree not to misuse the Service. Prohibited actions include:
-            </p>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>
-                Reverse engineering or attempting to extract our source code.
-              </li>
-              <li>
-                Using the Service to generate malicious code, malware, or
-                viruses.
-              </li>
-              <li>
-                Overloading our infrastructure (e.g., DDoS attacks or abusive
-                API scraping).
-              </li>
-              <li>Sharing your account credentials with multiple users.</li>
-            </ul>
-          </section>
-
-          {/* 6. Limitation of Liability */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              6. Limitation of Liability
-            </h2>
-            <p>
-              To the maximum extent permitted by law, DevElevator shall not be
-              liable for any indirect, incidental, special, consequential, or
-              punitive damages, including without limitation, loss of profits,
-              data, use, goodwill, or other intangible losses, resulting from
-              your access to or use of the Service.
+            <p className="text-base-content/90 text-sm p-3 bg-amber-500/10 rounded border border-amber-500/20">
+              <strong>You are solely responsible</strong> for any code you write, copy, or deploy based on our suggestions. DevElevator is not liable for system outages, data loss, or security breaches resulting from the use of generated code.
             </p>
           </section>
 
-          {/* 7. Termination */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              7. Termination
-            </h2>
-            <p>
-              We may terminate or suspend your account immediately, without
-              prior notice or liability, for any reason whatsoever, including
-              without limitation if you breach the Terms. Upon termination, your
-              right to use the Service will cease immediately.
+          {/* Section 4 - NEW: Payments & Subscriptions */}
+          <section className="bg-base-200/30 p-6 rounded-xl border border-base-300">
+            <div className="flex items-center space-x-3 mb-4">
+              <CreditCard className="w-6 h-6 text-emerald-500" />
+              <h2 className="text-2xl font-semibold text-base-content">4. Payments & Subscriptions</h2>
+            </div>
+            <div className="space-y-3 text-base-content/80 text-sm">
+              <p>
+                <strong>Billing:</strong> Premium features require a paid subscription. Payments are processed securely via our third-party payment provider (Razorpay). We do not store your credit card information on our servers.
+              </p>
+              <p>
+                <strong>Cancellations & Refunds:</strong> You may cancel your subscription at any time through your billing dashboard. Due to the high computational costs of AI indexing, <strong>all payments are non-refundable</strong>. Upon cancellation, you will retain access to Pro features until the end of your current billing cycle.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 5 & 6 Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section>
+              <div className="flex items-center space-x-3 mb-3">
+                <BookOpen className="w-5 h-5 text-emerald-500" />
+                <h2 className="text-xl font-semibold text-base-content">5. Intellectual Property</h2>
+              </div>
+              <ul className="space-y-2 text-base-content/80 text-sm">
+                <li><strong className="text-emerald-400">Your Code:</strong> You retain 100% ownership of your repositories.</li>
+                <li><strong className="text-emerald-400">Our Platform:</strong> DevElevator's interface, proprietary indexing logic, and branding belong to us.</li>
+                <li><strong className="text-emerald-400">AI Output:</strong> You own the code snippets generated in response to your queries.</li>
+              </ul>
+            </section>
+
+            <section>
+              <div className="flex items-center space-x-3 mb-3">
+                <Ban className="w-5 h-5 text-emerald-500" />
+                <h2 className="text-xl font-semibold text-base-content">6. Acceptable Use</h2>
+              </div>
+              <ul className="space-y-2 text-base-content/80 text-sm">
+                <li>• No reverse engineering or API scraping.</li>
+                <li>• No generating malicious code, malware, or viruses.</li>
+                <li>• No sharing accounts across multiple users to bypass tier limits.</li>
+              </ul>
+            </section>
+          </div>
+
+          {/* Section 7 */}
+          <section className="border-t border-base-300 pt-8 mt-8">
+            <div className="flex items-center space-x-3 mb-4">
+              <ShieldAlert className="w-6 h-6 text-emerald-500" />
+              <h2 className="text-2xl font-semibold text-base-content">7. Limitation of Liability & Termination</h2>
+            </div>
+            <p className="text-base-content/80 text-sm mb-4">
+              To the maximum extent permitted by law, DevElevator shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, resulting from your use of the Service.
+            </p>
+            <p className="text-base-content/80 text-sm">
+              We reserve the right to suspend or terminate your account immediately, without prior notice, if you breach these Terms or engage in abusive API usage.
             </p>
           </section>
 
-          {/* 8. Contact */}
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">
-              8. Contact Us
-            </h2>
-            <p>
-              If you have any questions about these Terms, please contact us at:
-              <br />
-              <a
-                href={`mailto:${contactEmail}`}
-                className="text-primary hover:underline mt-1 block">
-                {contactEmail}
-              </a>
+          {/* Section 8 */}
+          <section className="bg-base-200/50 p-6 rounded-xl border border-base-300 text-center mt-8">
+            <Mail className="w-8 h-8 text-emerald-500 mx-auto mb-3" />
+            <h2 className="text-xl font-semibold text-base-content mb-2">8. Contact Us</h2>
+            <p className="text-base-content/70 mb-4 max-w-lg mx-auto">
+              For legal inquiries, billing issues, or to report a violation of these terms, please contact our support team.
             </p>
+            <a
+              href={`mailto:${contactEmail}`}
+              className="inline-flex items-center justify-center px-6 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium rounded-lg hover:bg-emerald-500/20 transition-colors"
+            >
+              {contactEmail}
+            </a>
           </section>
         </div>
       </main>

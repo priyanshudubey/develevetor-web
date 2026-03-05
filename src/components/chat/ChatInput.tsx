@@ -89,7 +89,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="p-2 md:p-2 border-t border-white/5 bg-base-100 z-10">
+    <div className="p-2 md:p-2 border-t border-base-300 bg-base-200 z-10">
       <div className="max-w-3xl mx-auto relative">
         {/* Selected File Chips */}
         {selectedFiles.length > 0 && (
@@ -114,15 +114,15 @@ export default function ChatInput({
 
         {/* Mentions Dropdown */}
         {showMentions && mentionResults.length > 0 && (
-          <div className="absolute bottom-16 left-0 right-0 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto z-50">
+          <div className="absolute bottom-16 left-0 right-0 bg-base-100 border border-base-300 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto z-50">
             {mentionResults.map((file) => (
               <button
                 key={file}
                 onClick={() => selectFile(file)}
-                className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-primary/20 hover:text-white flex items-center gap-2">
+                className="w-full text-left px-4 py-2 text-sm text-base-content/80 hover:bg-base-200 hover:text-base-content flex items-center gap-2 transition-colors">
                 <FileCode
                   size={14}
-                  className="text-slate-500"
+                  className="text-base-content/50"
                 />{" "}
                 {file}
               </button>
@@ -149,11 +149,11 @@ export default function ChatInput({
             }
             disabled={disabled || projectStatus !== "READY"}
             rows={1}
-            className="w-full min-h-14 max-h-40 p-4 pr-14 pb-8 bg-base-200/50 border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none overflow-y-auto"
+            className="w-full min-h-14 max-h-40 p-4 pr-14 pb-8 bg-base-100 border border-base-300 rounded-xl text-base-content focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none overflow-y-auto shadow-sm placeholder:text-base-content/50"
           />
 
           {/* Character Counter */}
-          <div className="absolute right-14 bottom-2 text-xs text-slate-500">
+          <div className="absolute right-14 bottom-2 text-xs text-base-content/50">
             {input.length}/{MAX_CHARS}
           </div>
 

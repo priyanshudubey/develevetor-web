@@ -47,7 +47,7 @@ export default function ChatMessage({
         className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
           role === "user"
             ? "bg-primary/20 text-primary"
-            : "bg-slate-700/50 text-slate-300"
+            : "bg-base-200 text-base-content/80"
         }`}>
         {role === "user" ? <User size={16} /> : <Bot size={16} />}
       </div>
@@ -55,12 +55,12 @@ export default function ChatMessage({
       {/* Content Bubble Area */}
       <div className={`max-w-[85%] space-y-2`}>
         <div
-          className={`px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-normal shadow-sm overflow-hidden prose prose-invert max-w-none ${
+          className={`px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-normal shadow-sm overflow-hidden prose max-w-none ${
             isError
-              ? "bg-red-500/10 text-red-200 border border-red-500/20 rounded-tl-none"
+              ? "bg-error/10 text-error border border-error/20 rounded-tl-none"
               : role === "user"
-                ? "bg-primary/10 text-primary-content border border-primary/20 rounded-tr-none"
-                : "bg-base-200/50 text-slate-200 border border-white/5 rounded-tl-none"
+                ? "bg-primary/10 text-primary border border-primary/20 rounded-tr-none"
+                : "bg-base-200/50 text-base-content border border-base-300 rounded-tl-none"
           }`}>
           {/* 👇 Render the MASKED content here instead of raw content */}
           <ReactMarkdown
@@ -137,7 +137,7 @@ export default function ChatMessage({
                 return (
                   <code
                     {...props}
-                    className="bg-white/10 text-slate-200 rounded px-1.5 py-0.5 font-mono text-[13px] border border-white/10">
+                    className="bg-base-300 text-base-content rounded px-1.5 py-0.5 font-mono text-[13px] border border-base-300/50">
                     {children}
                   </code>
                 );
@@ -171,7 +171,7 @@ export default function ChatMessage({
               <div
                 key={idx}
                 onClick={() => onSourceClick(source)}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-base-200 border border-white/5 text-[10px] text-slate-400 hover:text-primary hover:border-primary/30 transition-colors cursor-pointer">
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-base-200 border border-base-300 text-[10px] text-base-content/60 hover:text-primary hover:border-primary/30 transition-colors cursor-pointer shadow-sm">
                 <FileText size={10} />
                 <span className="truncate max-w-37.5">{source}</span>
               </div>

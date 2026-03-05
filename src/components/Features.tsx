@@ -8,36 +8,42 @@ export default function Features() {
       id="features"
       className="py-32 relative overflow-hidden">
       {/* Background Decorative Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0)",
+          backgroundSize: "24px 24px"
+        }}
+      />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-20 max-w-2xl">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-xs font-mono text-primary mb-6">
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary bg-primary/10 dark:bg-primary/5 text-xs font-mono uppercase tracking-widest text-primary mb-6">
             <span>CAPABILITIES</span>
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-white">
+            className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-slate-900 dark:text-white">
             Understands Code, <br />
             <span className="text-slate-500">Not Just Text.</span>
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-slate-400 leading-relaxed">
+            className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
             Most AI tools treat code like a novel. DevElevator parses the
-            <span className="text-white font-medium">
+            <span className="text-slate-900 dark:text-white font-medium">
               {" "}
               Abstract Syntax Tree (AST)
             </span>
@@ -110,16 +116,16 @@ function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay, duration: 0.5 }}
-      className="group relative flex flex-col justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-8 hover:border-white/10 transition-colors duration-300">
+      className="group relative flex flex-col justify-between rounded-2xl border border-slate-900/10 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] p-8 hover:border-slate-900/20 dark:hover:border-white/10 transition-colors duration-300">
       {/* Hover Gradient Blob */}
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl transition-all duration-500 group-hover:bg-primary/10 group-hover:blur-2xl" />
+      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet-500/10 dark:bg-violet-500/5 blur-3xl transition-all duration-500 group-hover:bg-violet-500/20 dark:group-hover:bg-violet-500/10 group-hover:blur-2xl" />
 
       <div className="relative z-10">
-        <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-lg border border-white/10 bg-white/5 shadow-inner">
+        <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-lg border border-slate-900/10 dark:border-white/10 bg-white dark:bg-white/5 shadow-sm dark:shadow-inner">
           {icon}
         </div>
-        <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
-        <p className="text-slate-400 leading-relaxed text-sm mb-6">{desc}</p>
+        <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">{title}</h3>
+        <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm mb-6">{desc}</p>
       </div>
 
       {/* Tech Tags */}
@@ -127,7 +133,7 @@ function FeatureCard({
         {tags.map((tag, i) => (
           <span
             key={i}
-            className="px-2 py-1 text-[10px] uppercase tracking-wider font-mono font-medium rounded border border-white/5 bg-white/5 text-slate-400 group-hover:border-primary/20 group-hover:text-primary transition-colors">
+            className="px-2 py-1 text-[10px] uppercase tracking-wider font-mono font-medium rounded border border-slate-900/10 dark:border-white/5 bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 group-hover:border-violet-500/30 dark:group-hover:border-violet-500/20 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
             {tag}
           </span>
         ))}

@@ -249,12 +249,12 @@ export default function ProjectChat() {
 
   if (!project) {
     return (
-      <div className="h-full flex flex-col items-center justify-center text-slate-500">
+      <div className="h-full flex flex-col items-center justify-center text-base-content/50">
         <Bot
           size={48}
-          className="mb-4 opacity-50"
+          className="mb-4 opacity-50 text-base-content/40"
         />
-        <p>Select a project from the sidebar to start chatting.</p>
+        <p className="text-base-content/60">Select a project from the sidebar to start chatting.</p>
       </div>
     );
   }
@@ -265,13 +265,13 @@ export default function ProjectChat() {
       <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center text-center mt-20 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards">
-            <div className="w-16 h-16 rounded-2xl bg-base-200 flex items-center justify-center mb-6 shadow-inner border border-white/5">
+            <div className="w-16 h-16 rounded-2xl bg-base-200 flex items-center justify-center mb-6 shadow-sm border border-base-300">
               <Sparkles
                 className="text-primary"
                 size={32}
               />
             </div>
-            <h2 className="text-2xl font-bold text-slate-200 mb-2">
+            <h2 className="text-2xl font-bold text-base-content mb-2">
               Ask about <span className="text-primary">{project.name}</span>
             </h2>
           </div>
@@ -292,16 +292,16 @@ export default function ProjectChat() {
 
         {loading && (
           <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-slate-700/50 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-base-200 flex items-center justify-center border border-base-300">
               <Loader2
-                className="animate-spin text-slate-400"
+                className="animate-spin text-base-content/60"
                 size={16}
               />
             </div>
-            <div className="flex items-center gap-1 h-10 px-4 bg-base-200/30 rounded-2xl rounded-tl-none">
-              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span>
-              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span>
-              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span>
+            <div className="flex items-center gap-1 h-10 px-4 bg-base-200/50 rounded-2xl rounded-tl-none border border-base-300">
+              <span className="w-1.5 h-1.5 bg-base-content/50 rounded-full animate-bounce"></span>
+              <span className="w-1.5 h-1.5 bg-base-content/50 rounded-full animate-bounce"></span>
+              <span className="w-1.5 h-1.5 bg-base-content/50 rounded-full animate-bounce"></span>
             </div>
           </div>
         )}

@@ -81,7 +81,7 @@ export default function GithubIntegrationTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64 text-slate-400">
+      <div className="flex items-center justify-center h-64 text-slate-500 dark:text-slate-400">
         <Loader2 className="w-6 h-6 animate-spin" />
       </div>
     );
@@ -89,17 +89,17 @@ export default function GithubIntegrationTab() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <div className="border-b border-white/5 pb-4 mb-6">
+      <div className="border-b border-slate-900/10 dark:border-white/5 pb-4 mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Key
                 size={20}
                 className="text-primary"
               />
               Authentication
             </h2>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
               Connect your GitHub account to enable AI-powered Pull Requests and
               repository syncing.
             </p>
@@ -134,7 +134,7 @@ export default function GithubIntegrationTab() {
       </div>
 
       <div className="space-y-3">
-        <label className="text-sm font-medium text-slate-300">
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
           {hasExistingToken
             ? "Update Personal Access Token"
             : "Personal Access Token (PAT)"}
@@ -149,16 +149,16 @@ export default function GithubIntegrationTab() {
                 ? "••••••••••••••••••••••••••••"
                 : "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             }
-            className="w-full bg-[#161b22] border border-white/10 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-slate-200 font-mono transition-shadow placeholder:font-sans"
+            className="w-full bg-white dark:bg-[#161b22] border border-slate-900/10 dark:border-white/10 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-slate-900 dark:text-slate-200 font-mono transition-shadow placeholder:font-sans shadow-sm dark:shadow-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
           />
           <button
             type="button"
             onClick={() => setShowToken(!showToken)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
             {showToken ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-500 dark:text-slate-500">
           Your token is encrypted before being stored securely in our database.
         </p>
       </div>

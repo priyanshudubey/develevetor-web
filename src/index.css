@@ -1,19 +1,9 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* Define the "DevElevator" Theme (Deep Slate & Emerald) */
+/* Tailwind v4 @theme is static (build-time only).
+   We only define non-color tokens here. */
 @theme {
-  /* Override the default gray palette to be Slate (Blue-ish Gray) */
-  --color-base-100: oklch(20% 0.05 264); /* Deep Slate (Main Background) */
-  --color-base-200: oklch(
-    16% 0.04 264
-  ); /* Darker Slate (Secondary Background) */
-  --color-base-300: oklch(12% 0.04 264); /* Darkest Slate (Borders) */
-
-  --color-primary: oklch(65% 0.22 150); /* Emerald Green (Action/Success) */
-  --color-secondary: oklch(70% 0.16 230); /* Sky Blue (Links/Info) */
-  --color-accent: oklch(75% 0.18 60); /* Amber/Orange (Warnings) */
-
   --animate-shine: shine 1s;
 
   @keyframes shine {
@@ -25,42 +15,86 @@
   --font-sans: "Inter", ui-sans-serif, system-ui;
 }
 
-/* DaisyUI v5 uses CSS variables for themes. 
-   We override the root variables to force our dark theme globally.
-*/
-:root {
+/* Configure standard Tailwind v4 Dark mode class toggling */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* === DARK THEME === */
+:root, [data-theme="dark"] {
   color-scheme: dark;
 
-  /* Background Colors */
-  --b1: 20% 0.05 264; /* Base 100 */
-  --b2: 16% 0.04 264; /* Base 200 */
-  --b3: 12% 0.04 264; /* Base 300 */
-  --bc: 98% 0.02 264; /* Base Content (Text) */
-
-  /* Primary Color (Emerald) */
+  /* DaisyUI shorthand variables */
+  --b1: 20% 0.05 264;
+  --b2: 16% 0.04 264;
+  --b3: 12% 0.04 264;
+  --bc: 98% 0.02 264;
   --p: 65% 0.22 150;
-  --pc: 15% 0.05 150; /* Primary Content (Text on Green) */
-
-  /* Secondary Color (Sky Blue) */
+  --pc: 15% 0.05 150;
   --s: 70% 0.16 230;
   --sc: 15% 0.05 230;
-
-  /* Accent Color (Amber) */
   --a: 75% 0.18 60;
   --ac: 15% 0.05 60;
-
-  /* Neutral Color (Gray) */
   --n: 25% 0.04 264;
   --nc: 85% 0.02 264;
-
-  /* Semantic State Colors */
-  --in: 72% 0.15 230; /* Info */
-  --su: 65% 0.22 150; /* Success */
-  --wa: 82% 0.15 80; /* Warning */
-  --er: 60% 0.2 20; /* Error */
-
-  /* Technical UI Settings (Squared off look) */
+  --in: 72% 0.15 230;
+  --su: 65% 0.22 150;
+  --wa: 82% 0.15 80;
+  --er: 60% 0.2 20;
   --rounded-box: 0.5rem;
   --rounded-btn: 0.3rem;
   --rounded-badge: 0.2rem;
+
+  /* Tailwind v4 runtime color tokens – MUST mirror the values above */
+  --color-base-100: oklch(20% 0.05 264);
+  --color-base-200: oklch(16% 0.04 264);
+  --color-base-300: oklch(12% 0.04 264);
+  --color-base-content: oklch(98% 0.02 264);
+  --color-primary: oklch(65% 0.22 150);
+  --color-primary-content: oklch(15% 0.05 150);
+  --color-secondary: oklch(70% 0.16 230);
+  --color-secondary-content: oklch(15% 0.05 230);
+  --color-accent: oklch(75% 0.18 60);
+  --color-accent-content: oklch(15% 0.05 60);
+  --color-info: oklch(72% 0.15 230);
+  --color-success: oklch(65% 0.22 150);
+  --color-warning: oklch(82% 0.15 80);
+  --color-error: oklch(60% 0.2 20);
+}
+
+/* === LIGHT THEME === */
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* DaisyUI shorthand variables */
+  --b1: 100% 0 0;
+  --b2: 96% 0.01 260;
+  --b3: 92% 0.02 260;
+  --bc: 25% 0.04 264;
+  --p: 65% 0.22 150;
+  --pc: 98% 0.02 150;
+  --s: 70% 0.16 230;
+  --sc: 98% 0.02 230;
+  --a: 75% 0.18 60;
+  --ac: 98% 0.02 60;
+  --n: 85% 0.02 264;
+  --nc: 25% 0.04 264;
+  --in: 72% 0.15 230;
+  --su: 65% 0.22 150;
+  --wa: 82% 0.15 80;
+  --er: 60% 0.2 20;
+
+  /* Tailwind v4 runtime color tokens – light mode values */
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(96% 0.01 260);
+  --color-base-300: oklch(92% 0.02 260);
+  --color-base-content: oklch(25% 0.04 264);
+  --color-primary: oklch(65% 0.22 150);
+  --color-primary-content: oklch(98% 0.02 150);
+  --color-secondary: oklch(70% 0.16 230);
+  --color-secondary-content: oklch(98% 0.02 230);
+  --color-accent: oklch(75% 0.18 60);
+  --color-accent-content: oklch(98% 0.02 60);
+  --color-info: oklch(72% 0.15 230);
+  --color-success: oklch(65% 0.22 150);
+  --color-warning: oklch(82% 0.15 80);
+  --color-error: oklch(60% 0.2 20);
 }

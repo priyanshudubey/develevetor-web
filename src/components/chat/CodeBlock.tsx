@@ -31,16 +31,16 @@ export default function CodeBlock({
   };
 
   return (
-    <div className="relative my-3 rounded-lg overflow-hidden bg-[#1e1e1e] border border-white/10 group">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-white/5 border-b border-white/5">
+    <div className="relative my-3 rounded-lg overflow-hidden bg-slate-50 dark:bg-[#1e1e1e] border border-slate-900/10 dark:border-white/10 group shadow-sm dark:shadow-none">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900/5 dark:bg-white/5 border-b border-slate-900/10 dark:border-white/5">
         <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/20" />
-          <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20" />
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20" />
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500/30 dark:bg-red-500/20" />
+          <div className="w-2.5 h-2.5 rounded-full bg-amber-500/30 dark:bg-amber-500/20" />
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30 dark:bg-emerald-500/20" />
         </div>
         <button
           onClick={handleCopy}
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-white/10 rounded text-slate-400 hover:text-slate-200"
+          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-slate-900/10 dark:hover:bg-white/10 rounded text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
           title="Copy Code">
           {copied ? (
             <Check

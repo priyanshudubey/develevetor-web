@@ -8,6 +8,7 @@ interface User {
   email: string;
   name: string;
   avatar_url: string;
+  plan: string;
 }
 
 interface AuthContextType {
@@ -25,8 +26,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check if user is logged in on mount
   useEffect(() => {
-    checkUser();
-  }, []);
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("error")) {
+    console.error("Authentication failed:", params.get("error"));
+  }
+  checkUser();
+}, []);
 
   const checkUser = async () => {
     try {
@@ -35,9 +40,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         withCredentials: true,
       });
       setUser(data.user);
-    } catch (error) {
+    } catch (error: any) {
       setUser(null);
-      console.error("Error checking user", error);
+      if (error?.response?.status !== 401) {
+        console.error("Error checking user", error);
+      }
     } finally {
       setLoading(false);
     }
@@ -58,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       );
       setUser(null);
-      window.location.href = "/"; // Redirect to home
+      window.location.href = "/"; 
     } catch (error) {
       console.error("Logout failed", error);
     }
@@ -71,8 +78,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Custom hook to use the auth context
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
