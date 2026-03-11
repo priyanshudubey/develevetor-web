@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Sparkles, Bot, Loader2, AlertTriangle } from "lucide-react"; // 👈 Added AlertTriangle
 import { useOutletContext } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import type { Project } from "../layouts/DashboardLayout";
 
 // Import our new components
@@ -45,12 +45,7 @@ export default function ProjectChat() {
   useEffect(() => {
     const fetchUsage = async () => {
       try {
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/auth/usage`,
-          {
-            withCredentials: true,
-          },
-        );
+        const { data } = await api.get("/api/auth/usage");
 
         setUsageStats({
           current: data.usage.chats,
@@ -85,10 +80,8 @@ export default function ProjectChat() {
   useEffect(() => {
     if (!project?.id) return setMessages([]);
 
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/chat/${project.id}`, {
-        withCredentials: true,
-      })
+    api
+      .get(`/api/chat/${project.id}`)
       .then((res) => setMessages(Array.isArray(res.data) ? res.data : []))
       .catch((err) => console.error("History failed", err));
   }, [project?.id]);
@@ -102,9 +95,8 @@ export default function ProjectChat() {
     if (!project) return;
     const cleanName = fileName.replace(/\\/g, "/");
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/projects/${project.id}/file?path=${cleanName}`,
-        { withCredentials: true },
+      const { data } = await api.get(
+        `/api/projects/${project.id}/file?path=${cleanName}`
       );
       setViewFile({ name: cleanName, content: data.content });
       setIsViewerOpen(true);
@@ -131,9 +123,8 @@ export default function ProjectChat() {
       if (selectedFiles.length > 0) {
         const filePromises = selectedFiles.map(async (filePath) => {
           try {
-            const { data } = await axios.get(
-              `${import.meta.env.VITE_API_URL}/api/projects/${project.id}/file?path=${encodeURIComponent(filePath)}`,
-              { withCredentials: true },
+            const { data } = await api.get(
+              `/api/projects/${project.id}/file?path=${encodeURIComponent(filePath)}`
             );
             return `\n\n--- Start of File: ${filePath} ---\n${data.content}\n--- End of File ---`;
           } catch (error) {
@@ -160,9 +151,9 @@ export default function ProjectChat() {
       });
 
       if (!response.ok) {
-        if (response.status === 429) {
+        if (response.status === 429 || response.status === 403) {
           const errorData = await response.json();
-          let limitMsg = errorData.error || "Rate limit exceeded.";
+          let limitMsg = errorData.error || errorData.message || "Rate limit exceeded.";
 
           if (errorData.resetAt) {
             lockUI(errorData.resetAt, usageStats.limit);
@@ -175,11 +166,16 @@ export default function ProjectChat() {
               (diffMs % (1000 * 60 * 60)) / (1000 * 60),
             );
 
-            limitMsg = `${errorData.error} Limit resets in ${hoursLeft}h ${minutesLeft}m.`;
+            limitMsg = `${errorData.error || 'Limit Reached'}. Resets in ${hoursLeft}h ${minutesLeft}m.`;
           }
 
-          // 👇 2. Lock the UI by setting the state
           setRateLimitMessage(limitMsg);
+
+          // Dispatch native browser event to trigger UpgradeModal for SSE route natively
+          window.dispatchEvent(
+            new CustomEvent("rate-limit-hit", { detail: { message: limitMsg } })
+          );
+
           throw new Error(limitMsg);
         }
         throw new Error("Stream failed");

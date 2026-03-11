@@ -202,7 +202,7 @@ export default function DashboardLayout() {
     : null;
 
   return (
-    <div className="min-h-screen bg-base-100 text-base-content font-sans flex overflow-hidden">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans flex overflow-hidden transition-colors duration-300">
       {/* Sidebar Component */}
       <Sidebar
         projects={projects}
@@ -218,11 +218,11 @@ export default function DashboardLayout() {
       />
 
       {/* --- MAIN CONTENT AREA --- */}
-      <main className="flex-1 flex flex-col h-screen min-w-0 bg-base-100 relative">
+      <main className="flex-1 flex flex-col h-screen min-w-0 bg-zinc-50 dark:bg-zinc-950 relative transition-colors duration-300">
         {/* Mobile Menu Toggle for pages without header */}
         {(isSettingsPage || isDocsPage) && (
           <button
-            className="md:hidden fixed top-4 left-4 z-50 p-2 bg-base-200 border border-base-300 rounded-lg text-base-content/60 hover:text-base-content transition-colors shadow-lg"
+            className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-white/5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors shadow-lg"
             onClick={() => setIsSidebarOpen((prev) => !prev)}
             aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
             title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
@@ -232,21 +232,21 @@ export default function DashboardLayout() {
 
         {/* Dashboard Home Header */}
         {isDashboardHome && (
-          <header className="sticky top-0 h-14 flex items-center justify-between px-6 border-b border-base-300 bg-base-100/80 backdrop-blur-sm z-10">
+          <header className="sticky top-0 h-14 flex items-center justify-between px-6 border-b border-zinc-200 dark:border-white/5 bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md z-10 transition-colors duration-300">
             <div className="flex items-center gap-2 md:hidden">
               <button
-                className="text-base-content/60 hover:text-base-content transition-colors"
+                className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 onClick={() => setIsSidebarOpen((prev) => !prev)}
                 aria-label="Toggle sidebar">
                 {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
               </button>
             </div>
-            <span className="font-semibold text-base-content/80 text-sm tracking-tight hidden md:block">Dashboard</span>
+            <span className="font-semibold text-zinc-800 dark:text-zinc-300 text-sm tracking-tight hidden md:block">Dashboard</span>
             <div className="flex items-center gap-4 ml-auto">
               <ThemeToggle />
               <button
                 onClick={logout}
-                className="text-base-content/60 hover:text-error transition-colors"
+                className="text-zinc-400 hover:text-error transition-colors"
                 title="Logout">
                 <LogOut size={16} />
               </button>
@@ -256,10 +256,10 @@ export default function DashboardLayout() {
 
         {/* Top Header - Show on project pages */}
         {!isSettingsPage && !isDocsPage && !isDashboardHome && (
-          <header className="h-14 flex items-center justify-between px-6 border-b border-base-300 bg-base-100/50 backdrop-blur-sm z-10">
-            <div className="flex items-center gap-2 text-sm text-base-content/60">
+          <header className="h-14 flex items-center justify-between px-6 border-b border-zinc-200 dark:border-white/5 bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md z-10 transition-colors duration-300">
+            <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
               <button
-                className="md:hidden text-base-content/60 hover:text-base-content transition-colors"
+                className="md:hidden text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 onClick={() => setIsSidebarOpen((prev) => !prev)}
                 aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
                 title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}>
@@ -267,11 +267,11 @@ export default function DashboardLayout() {
               </button>
               {activeProject ? (
                 <>
-                  <span className="hover:text-base-content cursor-pointer transition-colors">
+                  <span className="hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer transition-colors">
                     {activeProject.name.split("/")[0]}
                   </span>
-                  <span className="text-base-content/40">/</span>
-                  <span className="font-medium text-base-content flex items-center gap-2">
+                  <span className="text-zinc-600">/</span>
+                  <span className="font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                     <Github size={14} />
                     {activeProject.name.split("/")[1]}
                   </span>
@@ -285,7 +285,7 @@ export default function DashboardLayout() {
                   )}
                 </>
               ) : (
-                <span className="text-base-content/50">
+                <span className="text-zinc-500">
                   Select a project to start
                 </span>
               )}
@@ -295,7 +295,7 @@ export default function DashboardLayout() {
               <ThemeToggle />
               <button
                 onClick={logout}
-                className="text-base-content/60 hover:text-error transition-colors"
+                className="text-zinc-400 hover:text-error transition-colors"
                 title="Logout">
                 <LogOut size={16} />
               </button>
@@ -324,17 +324,17 @@ export default function DashboardLayout() {
 
       {/* Delete Confirmation Modal */}
       {projectToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-base-100 border border-base-300 rounded-2xl shadow-xl p-6 relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 relative animate-in zoom-in-95 duration-200">
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-error/10 rounded-full flex items-center justify-center mb-4 text-error">
                 <AlertTriangle size={24} />
               </div>
 
-              <h3 className="text-xl font-bold text-base-content mb-2">
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 Delete Project?
               </h3>
-              <p className="text-base-content/60 text-sm mb-6 leading-relaxed">
+              <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
                 This action cannot be undone. This will permanently delete the
                 project and all associated chat history.
               </p>
@@ -343,7 +343,7 @@ export default function DashboardLayout() {
                 <button
                   onClick={() => setProjectToDelete(null)}
                   disabled={isDeleting}
-                  className="flex-1 py-2.5 rounded-xl border border-base-300 text-base-content/80 hover:bg-base-200 hover:text-base-content transition-all text-sm font-medium">
+                  className="flex-1 py-2.5 rounded-xl border border-zinc-300 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-all text-sm font-medium">
                   Cancel
                 </button>
                 <button

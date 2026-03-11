@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const checkUser = async () => {
     try {
       // We need to set 'withCredentials: true' to send the cookie
-      const { data } = await axios.get("http://localhost:3000/api/auth/me", {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
         withCredentials: true,
       });
       setUser(data.user);
@@ -52,13 +52,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = () => {
     // Redirect to backend auth endpoint
-    window.location.href = "http://localhost:3000/api/auth/github";
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
   };
 
   const logout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
         {},
         {
           withCredentials: true,

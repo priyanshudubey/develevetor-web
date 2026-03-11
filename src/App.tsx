@@ -36,11 +36,13 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
 }
 
 import { ThemeProvider } from "./context/ThemeContext";
+import { UpgradeProvider } from "./context/UpgradeContext";
 
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
+      <UpgradeProvider>
+        <AuthProvider>
         <BrowserRouter>
         <Routes>
           {/* 1. Public Zone */}
@@ -108,8 +110,9 @@ function App() {
             }
           />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        </BrowserRouter>
+        </AuthProvider>
+      </UpgradeProvider>
     </ThemeProvider>
   );
 }

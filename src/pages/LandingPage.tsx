@@ -7,7 +7,7 @@ import Pricing from "../components/Pricing";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-base-100 font-sans text-base-content selection:bg-emerald-500/20 selection:text-emerald-900 overflow-x-hidden">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-900 overflow-x-hidden transition-colors duration-300">
       {/* --- TECHNICAL BACKGROUND GRID --- */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"

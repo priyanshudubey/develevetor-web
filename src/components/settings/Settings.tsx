@@ -10,10 +10,10 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("ai");
 
   return (
-    <div className="h-full bg-slate-50 dark:bg-[#0d1117] text-slate-900 dark:text-slate-200 p-8 overflow-y-auto">
+    <div className="h-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 p-8 overflow-y-auto transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1 text-slate-900 dark:text-slate-100">Settings</h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-8">
+        <h1 className="text-2xl font-bold mb-1 text-zinc-900 dark:text-zinc-100">Settings</h1>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-8">
           Manage your AI preferences, integrations, and account details.
         </p>
 
@@ -24,12 +24,12 @@ export default function Settings() {
               onClick={() => setActiveTab("ai")}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "ai"
-                  ? "bg-primary/10 text-primary"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50"
               }`}>
               <Sparkles
                 size={18}
-                className={activeTab === "ai" ? "text-primary" : ""}
+                className={activeTab === "ai" ? "text-emerald-500" : ""}
               />
               AI Configuration
             </button>
@@ -38,12 +38,12 @@ export default function Settings() {
               onClick={() => setActiveTab("github")}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "github"
-                  ? "bg-primary/10 text-primary"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50"
               }`}>
               <Github
                 size={18}
-                className={activeTab === "github" ? "text-primary" : ""}
+                className={activeTab === "github" ? "text-emerald-500" : ""}
               />
               GitHub Integration
             </button>
@@ -52,10 +52,10 @@ export default function Settings() {
               onClick={() => setActiveTab("billing")}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "billing"
-                  ? "bg-primary/10 text-primary"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50"
               }`}>
-              <CreditCard size={18} />
+              <CreditCard size={18} className={activeTab === "billing" ? "text-emerald-500" : ""} />
               Usage & Billing
             </button>
 
@@ -63,10 +63,10 @@ export default function Settings() {
               onClick={() => setActiveTab("appearance")}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "appearance"
-                  ? "bg-primary/10 text-primary"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-900/5 dark:hover:bg-white/5"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50"
               }`}>
-              <Palette size={18} />
+              <Palette size={18} className={activeTab === "appearance" ? "text-emerald-500" : ""} />
               Appearance
             </button>
           </aside>
@@ -78,8 +78,8 @@ export default function Settings() {
             {activeTab === "billing" && <BillingUsageTab />}
 
             {activeTab === "appearance" && (
-              <div className="flex flex-col items-center justify-center h-64 border border-dashed border-slate-900/10 dark:border-white/10 rounded-xl bg-white dark:bg-[#161b22]/50 animate-in fade-in duration-300 shadow-sm dark:shadow-none">
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+              <div className="flex flex-col items-center justify-center h-64 border border-dashed border-zinc-200 dark:border-white/5 rounded-xl bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md animate-in fade-in duration-300">
+                <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
                   {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}{" "}
                   settings coming soon.
                 </p>

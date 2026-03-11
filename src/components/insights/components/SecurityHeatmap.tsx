@@ -43,19 +43,19 @@ const HeatmapCell = React.memo(function HeatmapCell({ insight, onRefactor }: Cel
   return (
     <motion.div
       variants={card}
-      className={`relative rounded-xl p-3 border text-left overflow-visible transition-all group/cell min-h-[80px] hover:-translate-y-0.5 hover:shadow-lg ${
+      className={`relative rounded-xl p-3 border text-left overflow-visible transition-all group/cell min-h-[80px] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] ${
         critical
           ? "bg-red-500/10 border-red-500/30"
           : count > 0
-            ? "bg-base-100 border-emerald-500/8"
-            : "bg-base-200 border-base-300"
+            ? "bg-white dark:bg-zinc-950 border-emerald-500/40 dark:border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.05)]"
+            : "bg-white/60 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800/80"
       }`}
     >
       {critical && (
         <span className="absolute inset-0 rounded-xl animate-pulse bg-red-500/5 pointer-events-none" />
       )}
       <div className="flex items-start justify-between mb-1.5">
-        <p className="text-[12px] font-mono font-medium text-base-content/80 truncate pr-6">
+        <p className="text-[12px] font-mono font-medium text-zinc-700 dark:text-zinc-300 truncate pr-6 group-hover/cell:text-zinc-900 dark:group-hover/cell:text-zinc-100 transition-colors">
           {name}
         </p>
         <button
@@ -71,12 +71,12 @@ const HeatmapCell = React.memo(function HeatmapCell({ insight, onRefactor }: Cel
           <InsightTag key={t} label={t} size="xs" />
         ))}
         {insight.vulnerability_tags.length > 3 && (
-          <span className="text-[10px] text-base-content/40">
+          <span className="text-[10px] text-zinc-600 dark:text-zinc-500 font-medium">
             +{insight.vulnerability_tags.length - 3} more
           </span>
         )}
         {insight.vulnerability_tags.length === 0 && (
-          <span className="text-[10px] text-success/70">✓ Clean</span>
+          <span className="text-[10px] text-emerald-500/70 font-bold">✓ Clean</span>
         )}
       </div>
     </motion.div>
@@ -102,10 +102,10 @@ export default function SecurityHeatmap({
   return (
     <motion.div
       variants={card}
-      className="bg-base-200 border border-base-300 rounded-2xl p-6"
+      className="bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-shadow"
     >
-      <h2 className="text-sm font-semibold text-base-content flex items-center gap-2 mb-4">
-        <ShieldAlert size={15} className="text-red-400" />
+      <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-4 tracking-wide">
+        <ShieldAlert size={15} className="text-red-400 drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]" />
         {heatmapFilter === "all" ? "Security Heatmap" : `Filtered: ${heatmapFilter === "security" ? "Security" : heatmapFilter === "complexity" ? "Complexity" : "Nesting"} Issues`}
         <span className="ml-auto flex items-center gap-2">
           {heatmapFilter !== "all" && (
@@ -116,21 +116,21 @@ export default function SecurityHeatmap({
               ✕ Clear filter
             </button>
           )}
-          <span className="text-[11px] font-normal text-base-content/40">
+          <span className="text-[11px] font-medium text-zinc-600 dark:text-zinc-500">
             {filteredHeatmap.length} files
           </span>
         </span>
       </h2>
-      <div className="max-h-[480px] overflow-y-auto scrollbar-thin scrollbar-thumb-base-content/10 scrollbar-track-transparent rounded-xl">
+      <div className="max-h-[480px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-800 scrollbar-track-transparent rounded-xl">
         {isFiltering ? (
           // Skeleton state
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pr-1">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="min-h-[80px] rounded-xl p-3 border border-base-300 bg-base-100/50 flex flex-col gap-2">
+              <div key={i} className="min-h-[80px] rounded-xl p-3 border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/50 flex flex-col gap-2">
                 <div className="h-3 w-3/4 bg-emerald-500/10 rounded animate-pulse" />
                 <div className="flex gap-1">
-                  <div className="h-4 w-16 bg-base-content/5 rounded animate-pulse" />
-                  <div className="h-4 w-12 bg-base-content/5 rounded animate-pulse" />
+                  <div className="h-4 w-16 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+                  <div className="h-4 w-12 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
                 </div>
               </div>
             ))}
@@ -148,11 +148,11 @@ export default function SecurityHeatmap({
               <HeatmapCell key={f.file_path} insight={f} onRefactor={setRefactorFile} />
             ))}
             {filteredHeatmap.length === 0 && (
-              <div className="col-span-full flex flex-col items-center justify-center text-center py-16 text-base-content/50">
+              <div className="col-span-full flex flex-col items-center justify-center text-center py-16 text-zinc-600 dark:text-zinc-500">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
                   <ThumbsUp size={28} className="text-emerald-400" />
                 </div>
-                <h3 className="text-lg font-bold text-base-content mb-1">Great Job!</h3>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-1">Great Job!</h3>
                 <p className="text-sm max-w-[250px]">
                   Your {heatmapFilter === 'security' ? 'security posture' : heatmapFilter === 'complexity' ? 'code structure' : 'nesting depth'} is airtight. No issues found.
                 </p>

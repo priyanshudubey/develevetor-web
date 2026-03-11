@@ -106,9 +106,9 @@ function ProjectPicker() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh] text-base-content/40 gap-3">
-        <Activity size={20} className="animate-pulse" />
-        <span className="text-sm font-medium tracking-wide">
+      <div className="flex items-center justify-center min-h-[50vh] text-zinc-500 gap-3">
+        <Activity size={20} className="animate-pulse text-zinc-400" />
+        <span className="text-sm font-medium tracking-wide text-zinc-400">
           Loading your workspaces…
         </span>
       </div>
@@ -118,13 +118,13 @@ function ProjectPicker() {
   if (projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-base-300 flex items-center justify-center mb-2">
-          <FolderOpen size={28} className="text-base-content/30" />
+        <div className="w-16 h-16 rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center mb-2 border border-zinc-200 dark:border-zinc-800">
+          <FolderOpen size={28} className="text-zinc-500" />
         </div>
-        <h2 className="text-xl font-bold text-base-content">
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
           No projects found.
         </h2>
-        <p className="text-sm text-base-content/50 max-w-sm">
+        <p className="text-sm text-zinc-500 max-w-sm">
           Head over to the Dashboard home to add a local or remote repository
           first.
         </p>
@@ -140,11 +140,11 @@ function ProjectPicker() {
       className="p-8 max-w-6xl mx-auto space-y-8"
     >
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-base-content flex items-center gap-2 mb-2">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-2">
           <Sparkles size={28} className="text-primary" />
           Select a Workspace
         </h1>
-        <p className="text-base-content/60">
+        <p className="text-zinc-600 dark:text-zinc-400">
           Choose a repository to view deep static analysis, code smells, and
           actionable refactoring insights.
         </p>
@@ -156,26 +156,26 @@ function ProjectPicker() {
             variants={card}
             key={p.id}
             onClick={() => navigate(`/dashboard/insights/${p.id}`)}
-            className="group relative bg-base-200 border border-base-300 hover:border-primary/40 rounded-2xl p-5 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 overflow-hidden flex flex-col h-[180px]"
+            className="group relative bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 hover:border-emerald-500/40 rounded-2xl p-5 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] overflow-hidden flex flex-col h-[180px]"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="flex items-start gap-4 mb-auto">
-              <div className="w-12 h-12 rounded-xl bg-base-100 flex items-center justify-center shrink-0 border border-base-300 group-hover:bg-primary/10 group-hover:border-primary/20 transition-colors">
-                <FolderGit2 size={24} className="text-base-content/60 group-hover:text-primary transition-colors" />
+              <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-950 flex items-center justify-center shrink-0 border border-zinc-200 dark:border-zinc-800 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition-colors">
+                <FolderGit2 size={24} className="text-zinc-500 group-hover:text-emerald-500 transition-colors" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-bold text-lg text-base-content truncate group-hover:text-primary transition-colors">
+                <h3 className="font-bold text-lg text-zinc-900 dark:text-zinc-100 truncate group-hover:text-emerald-400 transition-colors">
                   {p.name}
                 </h3>
-                <p className="text-xs text-base-content/40 font-mono truncate mt-0.5">
+                <p className="text-xs text-zinc-500 font-mono truncate mt-0.5">
                   {p.local_path || "Remote repo"}
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-base-300">
+            <div className="flex items-center justify-between mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-800">
               <div className="flex flex-col">
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-base-content/30 mb-0.5">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600 mb-0.5">
                   Status
                 </span>
                 <span className="text-xs font-medium text-emerald-500 flex items-center gap-1.5">
@@ -224,7 +224,7 @@ function InsightsDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64 text-base-content/40 gap-3">
+      <div className="flex items-center justify-center h-64 text-zinc-500 gap-3">
         <Activity size={18} className="animate-pulse" />
         <span className="text-sm">Loading insights…</span>
       </div>
@@ -233,7 +233,7 @@ function InsightsDetail() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 text-error/70 gap-2 text-sm">
+      <div className="flex items-center justify-center h-64 text-red-400 gap-2 text-sm">
         <AlertTriangle size={16} /> {error}
       </div>
     );
@@ -241,14 +241,14 @@ function InsightsDetail() {
 
   if (insights.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-base-content/40 gap-3">
-        <Sparkles size={28} />
-        <p className="text-sm">
+      <div className="flex flex-col items-center justify-center h-64 text-zinc-500 gap-3">
+        <Sparkles size={28} className="text-zinc-600" />
+        <p className="text-sm text-zinc-400">
           No insights yet — sync this project to generate analytics.
         </p>
         <button
           onClick={() => navigate("/dashboard/insights")}
-          className="text-xs text-primary hover:underline"
+          className="text-xs text-primary hover:underline hover:text-emerald-400 transition-colors"
         >
           ← Select a different project
         </button>
@@ -267,16 +267,16 @@ function InsightsDetail() {
       <motion.div variants={card} className="flex items-center gap-3">
         <button
           onClick={() => navigate("/dashboard/insights")}
-          className="p-2 rounded-lg hover:bg-base-content/5 text-base-content/40 hover:text-base-content transition-colors"
+          className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors border border-transparent hover:border-zinc-300 dark:hover:border-zinc-700"
         >
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-            <Sparkles size={22} className="text-primary" />
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <Sparkles size={22} className="text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
             Insights Hub
           </h1>
-          <p className="text-sm text-base-content/50 mt-0.5">
+          <p className="text-sm text-zinc-500 mt-0.5 font-medium">
             {insights.length} files analysed · {summaries.length} AI summaries
           </p>
         </div>

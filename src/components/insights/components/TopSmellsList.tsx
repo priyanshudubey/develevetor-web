@@ -17,13 +17,13 @@ export default function TopSmellsList({ topComplex }: Props) {
   return (
     <motion.div
       variants={card}
-      className="lg:col-span-3 bg-base-200 border border-base-300 rounded-2xl p-6"
+      className="lg:col-span-3 bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-shadow"
     >
-      <h2 className="text-sm font-semibold text-base-content flex items-center gap-2 mb-4">
-        <GitBranch size={15} className="text-primary" />
+      <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-4 tracking-wide">
+        <GitBranch size={15} className="text-emerald-500" />
         Top Code Smells
       </h2>
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {topComplex.map((f, i) => {
           const name = f.file_path.replace(/\\/g, "/").split("/").pop() ?? f.file_path;
           const ccHigh = f.cyclomatic_complexity > 15;
@@ -33,14 +33,14 @@ export default function TopSmellsList({ topComplex }: Props) {
           return (
             <div
               key={f.file_path}
-              className="flex flex-col gap-2 px-3 py-2.5 rounded-xl bg-base-100 border border-base-300 hover:border-base-content/20 transition-colors"
+              className="group flex flex-col gap-2 px-3 py-2.5 rounded-xl bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800/80 hover:border-emerald-500/50 dark:hover:border-emerald-500/30 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-base-content/30 w-4">
+                <span className="text-xs font-mono text-zinc-500 dark:text-zinc-600 w-4 group-hover:text-zinc-700 dark:group-hover:text-zinc-500 transition-colors">
                   {i + 1}
                 </span>
-                <Layers size={13} className="text-base-content/40 shrink-0" />
-                <span className="flex-1 text-[13px] font-mono text-base-content/80 truncate">
+                <Layers size={13} className="text-zinc-400 dark:text-zinc-500 shrink-0 group-hover:text-emerald-600 dark:group-hover:text-emerald-500/70 transition-colors" />
+                <span className="flex-1 text-[13px] font-mono text-zinc-700 dark:text-zinc-300 truncate group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
                   {name}
                 </span>
                 <div className="flex items-center gap-1.5 shrink-0">
@@ -61,13 +61,13 @@ export default function TopSmellsList({ topComplex }: Props) {
                     </span>
                   )}
                   {!ccHigh && !nestHigh && (
-                    <span className="text-[10px] text-success/60">✓</span>
+                    <span className="text-[10px] text-emerald-500/60 font-bold">✓</span>
                   )}
                 </div>
               </div>
               <div className="flex items-center gap-1.5 pl-10">
-                <Clock size={10} className="text-base-content/30" />
-                <span className="text-[10px] text-base-content/40 font-mono">
+                <Clock size={10} className="text-zinc-400 dark:text-zinc-600" />
+                <span className="text-[10px] text-zinc-500 font-mono">
                   Modified {modifiedAgo}
                 </span>
               </div>

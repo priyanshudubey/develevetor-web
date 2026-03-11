@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Send, FileCode, X } from "lucide-react";
-import axios from "axios";
+import api from "../../services/api";
 import { debounce } from "lodash";
 
 interface ChatInputProps {
@@ -29,9 +29,8 @@ export default function ChatInput({
       debounce(async (query: string) => {
         if (!query) return;
         try {
-          const { data } = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/projects/${projectId}/files?query=${query}`,
-            { withCredentials: true },
+          const { data } = await api.get(
+            `/api/projects/${projectId}/files?query=${query}`
           );
           setMentionResults(data.files);
         } catch (err) {

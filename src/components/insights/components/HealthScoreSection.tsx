@@ -14,13 +14,13 @@ export function HealthGauge({ score }: { score: number }) {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
 
-  let color = "#10b981"; // Emerald
+  let color = "#10b981"; // Emerald-500
   let label = "Excellent";
   if (score < 45) {
-    color = "#ef4444"; // Red
+    color = "#f87171"; // Red-400
     label = "Critical";
   } else if (score < 75) {
-    color = "#f59e0b"; // Amber
+    color = "#fbbf24"; // Amber-400
     label = "Needs Focus";
   }
 
@@ -31,7 +31,7 @@ export function HealthGauge({ score }: { score: number }) {
           cx="50"
           cy="50"
           r={radius}
-          className="stroke-base-300"
+          className="stroke-zinc-200 dark:stroke-zinc-800"
           strokeWidth="8"
           fill="none"
         />
@@ -50,15 +50,15 @@ export function HealthGauge({ score }: { score: number }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center pointer-events-none">
-        <span className="text-3xl font-bold" style={{ color }}>
+        <span className="text-3xl font-bold" style={{ color, textShadow: `0 0 10px ${color}40` }}>
           {score}
         </span>
-        <span className="text-[11px] font-semibold text-base-content/50 tracking-wider uppercase">
+        <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-500 tracking-wider uppercase">
           {label}
         </span>
       </div>
       {/* Mock Score Momentum */}
-      <div className="absolute -bottom-5 flex items-center gap-1 text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+      <div className="absolute -bottom-5 flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-500 bg-emerald-500/20 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full">
         <Sparkles size={10} />
         +3% since last scan
       </div>
@@ -85,15 +85,15 @@ export default function HealthScoreSection({ breakdown, heatmapFilter, handleFil
   return (
     <motion.div
       variants={card}
-      className="lg:col-span-2 bg-base-200 border border-base-300 rounded-2xl p-6 flex flex-col items-center gap-4"
+      className="lg:col-span-2 bg-white/60 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col items-center gap-4 hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-shadow"
     >
       <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold uppercase tracking-widest text-base-content/50">
+        <span className="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">
           Project Health Score
         </span>
         <button
           onClick={() => setShowInfo((v) => !v)}
-          className="p-0.5 rounded text-base-content/30 hover:text-primary transition-colors"
+          className="p-0.5 rounded text-zinc-500 dark:text-zinc-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
           title="How is this calculated?"
         >
           <Info size={13} />
@@ -105,9 +105,9 @@ export default function HealthScoreSection({ breakdown, heatmapFilter, handleFil
         <motion.div
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full px-3 py-2 rounded-lg bg-slate-900/90 border border-emerald-500/30 text-[11px] text-slate-200 leading-relaxed"
+          className="w-full px-3 py-2 rounded-lg bg-white dark:bg-zinc-950 border border-emerald-500/30 text-[11px] text-zinc-900 dark:text-zinc-300 leading-relaxed shadow-[0_4px_15px_rgba(0,0,0,0.5)]"
         >
-          Your score is a weighted blend: <span className="text-amber-400 font-semibold">40% Complexity</span> + <span className="text-red-400 font-semibold">40% Security</span> + <span className="text-violet-400 font-semibold">20% Nesting</span>. Each category’s health = <code className="text-emerald-400">100 × (clean files / total files)</code>.
+          Your score is a weighted blend: <span className="text-amber-400 font-semibold">40% Complexity</span> + <span className="text-red-400 font-semibold">40% Security</span> + <span className="text-violet-400 font-semibold">20% Nesting</span>. Each category’s health = <code className="text-emerald-400 bg-emerald-500/10 px-1 rounded">100 × (clean files / total files)</code>.
         </motion.div>
       )}
 
@@ -117,7 +117,7 @@ export default function HealthScoreSection({ breakdown, heatmapFilter, handleFil
 
       {/* Score Impact Breakdown */}
       <div className="w-full space-y-2.5 mt-1">
-        <div className="text-[10px] font-semibold uppercase tracking-widest text-base-content/40 text-center">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500 text-center">
           Score Impact
         </div>
         {impactRows.map((row) => (
@@ -126,8 +126,8 @@ export default function HealthScoreSection({ breakdown, heatmapFilter, handleFil
             onClick={() => handleFilterClick(row.key)}
             className={`w-full text-left rounded-lg px-3 py-2 transition-all border ${
               heatmapFilter === row.key
-                ? "bg-emerald-500/5 border-emerald-500/30 ring-1 ring-emerald-500/20"
-                : "border-transparent hover:bg-base-content/5"
+                ? "bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                : "border-transparent hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50"
             }`}
           >
             <div className="flex items-center justify-between mb-1">
@@ -135,15 +135,15 @@ export default function HealthScoreSection({ breakdown, heatmapFilter, handleFil
                 {row.label}
               </span>
               <div className="flex items-center gap-2">
-                <span className={`text-[10px] font-bold ${row.health >= 75 ? 'text-emerald-400' : row.health >= 45 ? 'text-amber-400' : 'text-red-400'}`}>
+                <span className={`text-[10px] font-bold tracking-wide ${row.health >= 75 ? 'text-emerald-400' : row.health >= 45 ? 'text-amber-400' : 'text-red-400'}`}>
                   {row.health}%
                 </span>
-                <span className="text-[9px] text-base-content/30">
+                <span className="text-[9px] text-zinc-500 dark:text-zinc-600 font-medium">
                   {row.affected}/{totalFiles}
                 </span>
               </div>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-base-content/5 overflow-hidden">
+            <div className="w-full h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
               <motion.div
                 className={`h-full rounded-full ${row.barColor}`}
                 initial={{ width: 0 }}

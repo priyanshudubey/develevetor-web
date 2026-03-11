@@ -12,7 +12,7 @@
     }
   }
 
-  --font-sans: "Inter", ui-sans-serif, system-ui;
+  --font-sans: "Geist", "Inter", ui-sans-serif, system-ui;
 }
 
 /* Configure standard Tailwind v4 Dark mode class toggling */
@@ -22,12 +22,12 @@
 :root, [data-theme="dark"] {
   color-scheme: dark;
 
-  /* DaisyUI shorthand variables */
-  --b1: 20% 0.05 264;
-  --b2: 16% 0.04 264;
-  --b3: 12% 0.04 264;
-  --bc: 98% 0.02 264;
-  --p: 65% 0.22 150;
+  /* DaisyUI shorthand variables (Deep Zinc / Midnight) */
+  --b1: 14% 0.01 264; /* ~ zinc-950 */
+  --b2: 18% 0.01 264; /* ~ zinc-900 */
+  --b3: 22% 0.01 264; /* ~ zinc-800 */
+  --bc: 98% 0 0; /* Pure white for high contrast */
+  --p: 65% 0.22 150; /* emerald-500 */
   --pc: 15% 0.05 150;
   --s: 70% 0.16 230;
   --sc: 15% 0.05 230;
@@ -39,15 +39,15 @@
   --su: 65% 0.22 150;
   --wa: 82% 0.15 80;
   --er: 60% 0.2 20;
-  --rounded-box: 0.5rem;
-  --rounded-btn: 0.3rem;
-  --rounded-badge: 0.2rem;
+  --rounded-box: 0.75rem; /* modern slight rounding */
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 0.25rem;
 
-  /* Tailwind v4 runtime color tokens – MUST mirror the values above */
-  --color-base-100: oklch(20% 0.05 264);
-  --color-base-200: oklch(16% 0.04 264);
-  --color-base-300: oklch(12% 0.04 264);
-  --color-base-content: oklch(98% 0.02 264);
+  /* Tailwind v4 runtime color tokens */
+  --color-base-100: oklch(14% 0.01 264);
+  --color-base-200: oklch(18% 0.01 264);
+  --color-base-300: oklch(22% 0.01 264);
+  --color-base-content: oklch(98% 0 0);
   --color-primary: oklch(65% 0.22 150);
   --color-primary-content: oklch(15% 0.05 150);
   --color-secondary: oklch(70% 0.16 230);

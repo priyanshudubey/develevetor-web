@@ -136,9 +136,9 @@ export default function InsightTag({ label, size = "sm" }: InsightTagProps) {
           className="
             pointer-events-none absolute z-[100] top-full left-1/2 -translate-x-1/2 mt-2
             w-64 px-3 py-2.5 rounded-lg
-            bg-slate-900/95 backdrop-blur-sm
-            border border-emerald-500/30 shadow-xl shadow-black/30
-            text-[11px] text-slate-200 leading-relaxed font-normal normal-case tracking-normal
+            bg-white dark:bg-zinc-950 backdrop-blur-sm
+            border border-emerald-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.5)]
+            text-[11px] text-zinc-900 dark:text-zinc-300 leading-relaxed font-normal normal-case tracking-normal
             opacity-0 scale-95 -translate-y-1
             group-hover/tag:opacity-100 group-hover/tag:scale-100 group-hover/tag:translate-y-0
             group-focus-within/tag:opacity-100 group-focus-within/tag:scale-100 group-focus-within/tag:translate-y-0
@@ -146,7 +146,7 @@ export default function InsightTag({ label, size = "sm" }: InsightTagProps) {
           "
         >
           {/* Arrow */}
-          <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-900/95" />
+          <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-white dark:border-b-zinc-950" />
 
           {/* Severity badge + title */}
           <span className={`block font-semibold text-[10px] uppercase tracking-wider mb-1 ${style.titleColor}`}>

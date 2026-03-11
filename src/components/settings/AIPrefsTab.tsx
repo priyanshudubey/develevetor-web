@@ -141,8 +141,8 @@ function TiltCard({
       whileTap={{ scale: 0.97 }}
       className={`group relative text-left p-4 rounded-xl border cursor-pointer transition-colors duration-200 overflow-hidden ${
         isSelected
-          ? "bg-primary/10 border-primary/50 shadow-[0_0_24px_-8px_rgba(16,185,129,0.5)]"
-          : "bg-base-200 border-base-300 hover:border-base-content/20"
+          ? "bg-emerald-500/10 border-emerald-500/50 shadow-[0_0_24px_-8px_rgba(16,185,129,0.5)]"
+          : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 hover:border-emerald-500/30 dark:hover:border-emerald-500/30"
       }`}>
 
       {/* Mouse-follow glow — always rendered, visibility controlled by CSS opacity */}
@@ -156,8 +156,8 @@ function TiltCard({
       {/* Selected ping dot */}
       {isSelected && (
         <span className="absolute top-3 right-3 w-2 h-2">
-          <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+          <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
         </span>
       )}
 
@@ -166,8 +166,8 @@ function TiltCard({
         <div
           className={`p-2 rounded-lg shrink-0 ${
             isSelected
-              ? "bg-primary/20 text-primary"
-              : "bg-base-content/5 text-base-content/40 group-hover:text-base-content/60"
+              ? "bg-emerald-500/20 text-emerald-500"
+              : "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-500 group-hover:text-emerald-500/60"
           }`}>
           {m.icon}
         </div>
@@ -175,11 +175,11 @@ function TiltCard({
         <div className="flex-1 min-w-0">
           {/* Name + badge */}
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className={`text-sm font-semibold ${isSelected ? "text-primary" : "text-base-content"}`}>
+            <span className={`text-sm font-semibold ${isSelected ? "text-emerald-500" : "text-zinc-900 dark:text-zinc-100"}`}>
               {m.label}
             </span>
             {m.badge && (
-              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/20">
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 {m.badge}
               </span>
             )}
@@ -196,7 +196,7 @@ function TiltCard({
           </div>
 
           {/* Use-case */}
-          <p className="text-xs text-base-content/50 mt-2 leading-relaxed">{m.useCase}</p>
+          <p className="text-xs text-zinc-500 mt-2 leading-relaxed">{m.useCase}</p>
         </div>
       </div>
     </motion.div>
@@ -253,7 +253,7 @@ export default function AIPrefsTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64 text-base-content/40">
+      <div className="flex items-center justify-center h-64 text-zinc-400 dark:text-zinc-500">
         <Loader2 className="w-6 h-6 animate-spin" />
       </div>
     );
@@ -263,19 +263,19 @@ export default function AIPrefsTab() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
 
       {/* Section Header */}
-      <div className="border-b border-base-content/10 pb-4">
-        <h2 className="text-lg font-semibold text-base-content flex items-center gap-2">
-          <Cpu size={20} className="text-primary" />
+      <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <Cpu size={20} className="text-emerald-500" />
           Model Preferences
         </h2>
-        <p className="text-sm text-base-content/50 mt-1">
+        <p className="text-sm text-zinc-500 mt-1">
           Choose the AI engine that best fits your current task.
         </p>
       </div>
 
       {/* Model Card Grid */}
       <div className="space-y-3">
-        <label className="text-sm font-medium text-base-content/70 block">Active Model</label>
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block">Active Model</label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ perspective: "1000px" }}>
           {MODELS.map((m) => (
             <TiltCard
@@ -291,10 +291,10 @@ export default function AIPrefsTab() {
       {/* Temperature Slider */}
       <div className="space-y-3">
         <div className="flex justify-between items-center">
-          <label className="text-sm font-medium text-base-content/70">
+          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Creativity (Temperature)
           </label>
-          <span className="text-xs font-mono text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
+          <span className="text-xs font-mono text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
             {temperature.toFixed(2)}
           </span>
         </div>
@@ -305,19 +305,19 @@ export default function AIPrefsTab() {
           step="0.1"
           value={temperature}
           onChange={(e) => setTemperature(parseFloat(e.target.value))}
-          className="w-full h-1.5 bg-base-300 rounded-lg appearance-none cursor-pointer accent-primary"
+          className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
         />
-        <div className="flex justify-between text-[11px] text-base-content/40">
+        <div className="flex justify-between text-[11px] text-zinc-400 dark:text-zinc-500">
           <span>Strict (Refactoring)</span>
           <span>Creative (Brainstorming)</span>
         </div>
       </div>
 
       {/* Global Instructions */}
-      <div className="space-y-3 pt-2 border-t border-base-content/10">
+      <div className="space-y-3 pt-2 border-t border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-2">
-          <MessageSquare size={16} className="text-base-content/40" />
-          <label className="text-sm font-medium text-base-content/70">
+          <MessageSquare size={16} className="text-zinc-400 dark:text-zinc-500" />
+          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Global System Instructions
           </label>
         </div>
@@ -325,7 +325,7 @@ export default function AIPrefsTab() {
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
           placeholder="e.g., Always write React components using TypeScript interfaces instead of types. Never use var."
-          className="w-full bg-base-200 border border-base-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-base-content placeholder:text-base-content/30 min-h-28 resize-y transition-shadow"
+          className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 min-h-28 resize-y transition-shadow"
         />
       </div>
 
@@ -336,8 +336,8 @@ export default function AIPrefsTab() {
           disabled={isSaving || isSaved}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all disabled:opacity-70 ${
             isSaved
-              ? "bg-success/20 text-success border border-success/30"
-              : "bg-primary hover:bg-primary/90 text-primary-content"
+              ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/30"
+              : "bg-emerald-500 hover:bg-emerald-400 text-white"
           }`}>
           {isSaving ? (
             <div className="w-4 h-4 border-2 border-primary-content/30 border-t-primary-content rounded-full animate-spin" />

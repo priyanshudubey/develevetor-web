@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import api from "../services/api";
 import axios from "axios";
 import {
   X,
@@ -57,12 +58,7 @@ export default function NewProjectModal({
   const fetchRepos = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        "http://localhost:3000/api/projects/github-repos",
-        {
-          withCredentials: true,
-        },
-      );
+      const { data } = await api.get("/api/projects/github-repos");
       setRepos(data.repos);
     } catch (error) {
       console.error("Failed to fetch repos", error);
@@ -77,29 +73,21 @@ export default function NewProjectModal({
     setError(null); // Clear previous errors on new attempt
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/projects",
-        {
-          repoId: repo.id,
-          name: repo.name,
-          url: repo.url,
-          isPrivate: repo.private,
-        },
-        { withCredentials: true },
-      );
+      const { data } = await api.post("/api/projects", {
+        repoId: repo.id,
+        name: repo.name,
+        url: repo.url,
+        isPrivate: repo.private,
+      });
 
       onProjectAdded(data.project); // Update parent state
       onClose(); // Close modal
     } catch (err: unknown) {
-      // 👇 The Rate Limit Error Handling
       if (axios.isAxiosError(err) && err.response) {
-        const status = err.response.status;
-        const errorMessage = err.response.data.error;
-
-        if (status === 429 || status === 403) {
-          setError(`Limit Reached: ${errorMessage}`);
-        } else {
-          setError(errorMessage || "Failed to import repository.");
+        // Rate limit (429) and Concurrency (409) are handled by the global api interceptor
+        // We only set the local error state for other errors like 500 or validation errors.
+        if (err.response.status !== 429 && err.response.status !== 409) {
+           setError(err.response.data.error || "Failed to import repository.");
         }
       } else {
         setError("An unexpected error occurred. Please try again.");
