@@ -29,6 +29,8 @@ export default function ProjectChat() {
     resetAt: "",
   });
 
+  const [historyLoading, setHistoryLoading] = useState(false);
+
   // 👇 1. New State to lock the chat UI
   const [rateLimitMessage, setRateLimitMessage] = useState<string | null>(null);
 
@@ -69,21 +71,41 @@ export default function ProjectChat() {
   const lockUI = (resetIso: string, limit: number) => {
     const resetDate = new Date(resetIso);
     const diffMs = resetDate.getTime() - new Date().getTime();
+    
+    if (diffMs <= 0) return; // Should not happen but good safeguard
+    
     const hoursLeft = Math.floor(diffMs / (1000 * 60 * 60));
     const minutesLeft = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    setRateLimitMessage(
-      `Daily chat limit reached (${limit}/day). Limit resets in ${hoursLeft}h ${minutesLeft}m.`,
-    );
+    
+    // For smaller wait times (like 60s spam limiter), we might have 0h 0m left. Let's make it clearer.
+    if (hoursLeft === 0 && minutesLeft === 0) {
+      const secondsLeft = Math.floor(diffMs / 1000);
+      setRateLimitMessage(`Please wait a moment before sending another request (${secondsLeft}s).`);
+    } else {
+      setRateLimitMessage(
+        `Daily chat limit reached (${limit}/day). Limit resets in ${hoursLeft}h ${minutesLeft}m.`
+      );
+    }
+    
+    // Auto-unlock UI when the penalty period is over
+    setTimeout(() => {
+       setRateLimitMessage(null);
+    }, diffMs);
   };
 
   // 1. Load History
   useEffect(() => {
-    if (!project?.id) return setMessages([]);
+    if (!project?.id) {
+      setMessages([]);
+      return;
+    }
 
+    setHistoryLoading(true);
     api
       .get(`/api/chat/${project.id}`)
       .then((res) => setMessages(Array.isArray(res.data) ? res.data : []))
-      .catch((err) => console.error("History failed", err));
+      .catch((err) => console.error("History failed", err))
+      .finally(() => setHistoryLoading(false));
   }, [project?.id]);
   // 2. Auto Scroll
   useEffect(() => {
@@ -157,19 +179,12 @@ export default function ProjectChat() {
 
           if (errorData.resetAt) {
             lockUI(errorData.resetAt, usageStats.limit);
-            const resetDate = new Date(errorData.resetAt);
-            const now = new Date();
-            const diffMs = resetDate.getTime() - now.getTime();
-
-            const hoursLeft = Math.floor(diffMs / (1000 * 60 * 60));
-            const minutesLeft = Math.floor(
-              (diffMs % (1000 * 60 * 60)) / (1000 * 60),
-            );
-
-            limitMsg = `${errorData.error || 'Limit Reached'}. Resets in ${hoursLeft}h ${minutesLeft}m.`;
+            
+            // Only overwrite limitMsg if it is standard quota; otherwise keep the original errorData.error 
+            // the backend emits for the exact reason. (eg. "Too Many Requests").
+          } else {
+            setRateLimitMessage(limitMsg);
           }
-
-          setRateLimitMessage(limitMsg);
 
           // Dispatch native browser event to trigger UpgradeModal for SSE route natively
           window.dispatchEvent(
@@ -181,18 +196,20 @@ export default function ProjectChat() {
         throw new Error("Stream failed");
       }
       if (!response.body) throw new Error("No body");
+      
+      const sourcesHeader = response.headers.get("x-sources");
+      const modelCostHeader = response.headers.get("x-model-cost");
+      const sources = sourcesHeader ? JSON.parse(sourcesHeader) : [];
+      const modelCost = modelCostHeader ? parseInt(modelCostHeader, 10) : 1;
 
       setUsageStats((prev) => {
-        const newCount = prev.current + 1;
-        // If this was their 15th message, lock it down right now!
+        const newCount = prev.current + modelCost;
+        // If this pushed them over, lock it down!
         if (newCount >= prev.limit) {
           lockUI(prev.resetAt, prev.limit);
         }
         return { ...prev, current: newCount };
       });
-
-      const sourcesHeader = response.headers.get("x-sources");
-      const sources = sourcesHeader ? JSON.parse(sourcesHeader) : [];
 
       setMessages((prev) => [
         ...prev,
@@ -259,32 +276,41 @@ export default function ProjectChat() {
     <div className="h-full flex flex-col relative bg-base-100">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center text-center mt-20 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards">
-            <div className="w-16 h-16 rounded-2xl bg-base-200 flex items-center justify-center mb-6 shadow-sm border border-base-300">
-              <Sparkles
-                className="text-primary"
-                size={32}
-              />
-            </div>
-            <h2 className="text-2xl font-bold text-base-content mb-2">
-              Ask about <span className="text-primary">{project.name}</span>
-            </h2>
+        {historyLoading ? (
+          <div className="h-full flex flex-col items-center justify-center text-base-content/50 animate-in fade-in duration-500">
+            <Loader2 size={32} className="animate-spin mb-4 text-primary opacity-80" />
+            <p className="text-sm font-medium">Loading previous chats...</p>
           </div>
-        )}
+        ) : (
+          <>
+            {messages.length === 0 && (
+              <div className="flex flex-col items-center justify-center text-center mt-20 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards">
+                <div className="w-16 h-16 rounded-2xl bg-base-200 flex items-center justify-center mb-6 shadow-sm border border-base-300">
+                  <Sparkles
+                    className="text-primary"
+                    size={32}
+                  />
+                </div>
+                <h2 className="text-2xl font-bold text-base-content mb-2">
+                  Ask about <span className="text-primary">{project.name}</span>
+                </h2>
+              </div>
+            )}
 
-        {messages.map((msg, i) => (
-          <ChatMessage
-            key={i}
-            role={msg.role}
-            content={msg.content}
-            sources={msg.sources}
-            projectId={project.id}
-            onSourceClick={openFile}
-            isError={msg.isError}
-            attachments={msg.attachments}
-          />
-        ))}
+            {messages.map((msg, i) => (
+              <ChatMessage
+                key={i}
+                role={msg.role}
+                content={msg.content}
+                sources={msg.sources}
+                projectId={project.id}
+                onSourceClick={openFile}
+                isError={msg.isError}
+                attachments={msg.attachments}
+              />
+            ))}
+          </>
+        )}
 
         {loading && (
           <div className="flex gap-4">
