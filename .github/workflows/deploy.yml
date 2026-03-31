@@ -1,0 +1,38 @@
+name: 🚀 Deploy Frontend to Hostinger
+
+on:
+  push:
+    branches:
+      - main # Triggers whenever you push to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Uses a modern Node version
+
+      - name: 📦 Install Dependencies
+        run: npm ci # 'ci' is strictly better than 'install' for automated builds
+
+      - name: 🏗️ Build the Vite App
+        run: npm run build
+        env:
+          # Injects your Render URL into the build securely
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: 🚀 Sync Files to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/       # Takes the built files
+          server-dir: ./public_html/ # Drops them directly into the live folder
+          dangerous-clean-slate: true # Deletes old files in public_html so outdated JS chunks don't pile up
