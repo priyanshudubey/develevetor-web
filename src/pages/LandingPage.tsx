@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import Pricing from "../components/Pricing";
+import FAQ from "../components/FAQ";
 
 export default function LandingPage() {
   return (
@@ -32,6 +33,9 @@ export default function LandingPage() {
 
       {/* --- PRICING --- */}
       <Pricing />
+
+      {/* --- FAQ --- */}
+      <FAQ />
 
       {/* --- FOOTER --- */}
       <Footer />

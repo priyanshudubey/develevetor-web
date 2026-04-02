@@ -1,5 +1,5 @@
 // File: src/components/Footer.tsx
-import { Github, Twitter, Linkedin, Code2 } from "lucide-react";
+import { Github, Twitter, Linkedin, Code2, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
@@ -45,14 +45,16 @@ export default function Footer() {
               Stop context switching. Chat with your codebase instantly, audit security, and map architectures. Built for developers, by developers.
             </p>
             
-            {/* System Status Indicator */}
-            <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 shadow-sm dark:shadow-none">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            {/* Developer Credit */}
+            <a 
+              href="mailto:priyanshu0dubey@gmail.com"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 shadow-sm dark:shadow-none hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all duration-300 group cursor-pointer hover:-translate-y-0.5"
+            >
+              <Mail size={14} className="text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
+                Developed by <span className="font-bold text-emerald-600 dark:text-emerald-400 underline decoration-emerald-500/30 underline-offset-2 group-hover:decoration-emerald-500">Priyanshu Dubey</span>
               </span>
-              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">All systems operational</span>
-            </div>
+            </a>
           </div>
 
           {/* 2. Product Column */}
@@ -77,7 +79,7 @@ export default function Footer() {
           </div>
 
           {/* 3. Resources Column (Restored & Polished) */}
-          <div className="col-span-1 md:col-span-2 pt-2">
+          {/* <div className="col-span-1 md:col-span-2 pt-2">
             <h4 className="font-semibold text-zinc-900 dark:text-white mb-6">Resources</h4>
             <ul className="space-y-4 text-sm text-zinc-500 dark:text-zinc-400">
               <li>
@@ -95,7 +97,7 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* 4. Legal Column */}
           <div className="col-span-1 md:col-span-3 pt-2">
@@ -121,15 +123,15 @@ export default function Footer() {
           </p>
 
           <div className="flex items-center gap-5">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:-translate-y-1 transition-all">
+            <a href="https://github.com/priyanshudubey" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:-translate-y-1 transition-all">
               <span className="sr-only">GitHub</span>
               <Github size={20} />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:-translate-y-1 transition-all">
+            <a href="https://x.com/PriyanshuDube15" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:-translate-y-1 transition-all">
               <span className="sr-only">Twitter</span>
               <Twitter size={20} />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:-translate-y-1 transition-all">
+            <a href="https://www.linkedin.com/in/priyanshudubey/" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:-translate-y-1 transition-all">
               <span className="sr-only">LinkedIn</span>
               <Linkedin size={20} />
             </a>

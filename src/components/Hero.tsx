@@ -1,6 +1,7 @@
 // File: src/components/Hero.tsx
 import { motion, type Variants } from "framer-motion";
-import { Sparkles, ArrowRight, Code2, ShieldAlert } from "lucide-react";
+import { Sparkles, ArrowRight, Code2, ShieldAlert, Github } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -8,6 +9,8 @@ const fadeInUp: Variants = {
 };
 
 export default function Hero() {
+  const { login } = useAuth();
+
   return (
     <section className="relative min-h-screen bg-zinc-50 dark:bg-[#050505] flex flex-col items-center justify-start pt-22 pb-20 overflow-hidden font-sans transition-colors duration-300">
       
@@ -73,9 +76,9 @@ export default function Hero() {
           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
         >
           {/* Emerald Primary Button */}
-          <button className="group relative flex items-center justify-center h-12 px-8 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-semibold tracking-wide hover:scale-105 active:scale-95 transition-all duration-200 shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)] border border-emerald-400/50">
+          <button onClick={login} className="group relative flex items-center justify-center h-12 px-8 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-semibold tracking-wide hover:scale-105 active:scale-95 transition-all duration-200 shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)] border border-emerald-400/50">
             <span className="relative z-10 flex items-center gap-2">
-              Import Repository <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              <Github size={18} fill="currentColor" /> Continue with GitHub <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </span>
           </button>
           
