@@ -34,5 +34,5 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/       # Takes the built files
-          server-dir: ./public_html/ # Drops them directly into the live folder
+          server-dir: ./ # Drops them directly into the live folder
           dangerous-clean-slate: true # Deletes old files in public_html so outdated JS chunks don't pile up
