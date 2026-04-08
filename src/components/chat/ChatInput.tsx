@@ -10,6 +10,13 @@ interface ChatInputProps {
   onSend: (message: string, files: string[]) => void;
 }
 
+const PREDEFINED_MESSAGES = [
+  "Explain me this repository",
+  "Write a detailed README for this repository",
+  "How is the authentication implemented?",
+  "Help me find any security vulnerabilities"
+];
+
 export default function ChatInput({
   projectId,
   projectStatus,
@@ -90,6 +97,21 @@ export default function ChatInput({
   return (
     <div className="p-2 md:p-2 border-t border-base-300 bg-base-200 z-10">
       <div className="max-w-3xl mx-auto relative">
+        {/* Predefined Messages */}
+        {!input && selectedFiles.length === 0 && projectStatus === "READY" && !disabled && (
+          <div className="flex flex-wrap gap-2 px-1 mb-3">
+            {PREDEFINED_MESSAGES.map((msg, idx) => (
+              <button
+                key={idx}
+                onClick={() => setInput(msg)}
+                className="text-xs bg-base-100 hover:bg-base-300 border border-base-300 px-3 py-1.5 rounded-full transition-colors text-base-content/70 hover:text-base-content"
+              >
+                {msg}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Selected File Chips */}
         {selectedFiles.length > 0 && (
           <div className="flex flex-wrap gap-2 px-1 pb-2">

@@ -10,5 +10,5 @@ Disallow: /settings/
 Disallow: /api/
 Disallow: /workspace/
 
-# Specify the sitemap (update with actual domain later if needed)
-Sitemap: https://develevator.com/sitemap.xml
+# Specify the sitemap
+Sitemap: https://develevator.me/sitemap.xml
